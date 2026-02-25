@@ -38,7 +38,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="logo">
-           <img src="/TravelGo_logo1.png" alt="TravelGo Logo" />
+           <img src="/TravelGo_logo2.png" alt="TravelGo Logo" />
         </Link>
 
         {/* Navigation menu items only shown if logged in */}
