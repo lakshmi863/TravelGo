@@ -2,10 +2,11 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
     MdEventSeat, MdPerson, MdEmail, MdPhone, MdFormatQuote, 
-    MdSecurity, MdFlight, MdCheckCircle, MdAutorenew, MdClose, MdHourglassTop
+    MdSecurity, MdFlight, MdCheckCircle, MdAutorenew, MdClose, MdInfo
 } from 'react-icons/md';
 import './Booking.css';
 
+// Config: Airplane Layout
 const ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const COLS = ['A', 'B', 'C', 'D', 'E', 'F'];
 const TAKEN_SEATS = ['1A', '2C', '4F', '7B', '9E', '10C', '5B']; 
@@ -13,24 +14,40 @@ const TAKEN_SEATS = ['1A', '2C', '4F', '7B', '9E', '10C', '5B'];
 const Booking = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    
+    // Safety check for state passed from Flights page
     const { flight, schedule } = location.state || {};
 
     const [selectedSeat, setSelectedSeat] = useState(null);
-    const [locationInfo, setLocationInfo] = useState("Detecting...");
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+    const [locationInfo, setLocationInfo] = useState("Direct Connection");
+    const [formData, setFormData] = useState({ 
+        name: '', 
+        email: localStorage.getItem('userEmail') || '', 
+        phone: '' 
+    });
     
-    // UI MODAL CONFIG
-    const [alertConfig, setAlertConfig] = useState({ show: false, type: '', title: '', message: '', id: '' });
+    // Production Modal & Loading Configuration
+    const [alertConfig, setAlertConfig] = useState({ 
+        show: false, 
+        type: '', 
+        title: '', 
+        message: '', 
+        id: '' 
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        // Track Device Fingerprint for security vault
         let devId = localStorage.getItem('travelgo_dev_id') || 'TG-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         localStorage.setItem('travelgo_dev_id', devId);
+
+        // Detect Location safely
         fetch('https://ipapi.co/json/')
             .then(res => res.json())
-            .then(data => setLocationInfo(`${data.city}, ${data.country_name}`))
-            .catch(() => setLocationInfo("Location Restricted"));
+            .then(data => setLocationInfo(`${data.city || 'Remote'}, ${data.country_name || 'Terminal'}`))
+            .catch(() => setLocationInfo("Cloud Gateway"));
     }, []);
 
     const handleInputChange = (e) => {
@@ -39,40 +56,46 @@ const Booking = () => {
     };
 
     /**
-     * UPDATED SQUARING LOGIC:
-     * Now uses INSTANT BOOKING (Single Request) to avoid 400/CORS errors.
+     * PRODUCTION INSTANT SQUARING:
+     * This saves to the Django DB as 'BOOKED' in a single request.
      */
     const handleLocalBooking = async (e) => {
         e.preventDefault();
+        
         if (!selectedSeat) {
-            setAlertConfig({ show: true, type: 'error', title: 'Seat Required', message: 'Please tap a seat in the cabin map first.' });
+            setAlertConfig({ 
+                show: true, 
+                type: 'error', 
+                title: 'Seat Selection Required', 
+                message: 'Please tap a preferred seat on the airplane cabin map.' 
+            });
             return;
         }
 
         setIsSubmitting(true);
         
-        // SHOW LOADING MODAL
+        // Step 1: Show Processing Card
         setAlertConfig({ 
             show: true, 
             type: 'process', 
-            title: 'Securing Seat', 
-            message: 'Validating inventory and generating your TravelGo digital square...' 
+            title: 'Finalising Square', 
+            message: 'Generating unique Local Reference and syncing with SQLite vault...' 
         });
 
         const payload = {
-            flight: flight.id,
+            flight: flight?.id,
             passenger_name: formData.name,
             passenger_email: formData.email,
             passenger_phone: formData.phone,
             seat_number: selectedSeat,
-            total_price: flight.price,
+            total_price: flight?.price,
             booking_location: locationInfo,
             flight_departure_datetime: new Date(Date.now() + 172800000).toISOString(), 
             device_id: localStorage.getItem('travelgo_dev_id')
         };
 
         try {
-            // STEP 1: Combined Create & Verify Call
+            // STEP 2: The Direct "Square" Fetch
             const response = await fetch('https://travelgo-django.onrender.com/api/bookings/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -82,29 +105,31 @@ const Booking = () => {
             const result = await response.json();
 
             if (response.ok) {
-                // SUCCESS: Immediately update Modal to show verified transaction
+                // SUCCESS: Update Card to show Success Shield
                 setAlertConfig({ 
                     show: true, 
                     type: 'success', 
-                    title: 'Booking Squared!', 
-                    message: `Success! Your ticket is confirmed. Digital boarding pass sent to ${formData.email}`, 
+                    title: 'Ticket Confirmed!', 
+                    message: `Success! Seat ${selectedSeat} is squared. A digital boarding pass has been generated.`, 
                     id: result.transaction_id 
                 });
                 
-                // Navigate to My Bookings after success animation
-                setTimeout(() => navigate('/my-bookings'), 2800);
+                // Keep the card visible for 3 seconds before dashboard redirect
+                setTimeout(() => navigate('/my-bookings'), 3000);
             } else {
-                throw new Error(result.error || result.message || "Squaring Rejected by Server.");
+                throw new Error(result.error || result.message || "Data Square Rejected");
             }
 
         } catch (error) {
             setAlertConfig({ 
                 show: true, 
                 type: 'error', 
-                title: 'Transaction Error', 
-                message: error.message 
+                title: 'System Exception', 
+                message: error.message.includes('Failed to fetch') 
+                    ? "Connection timed out. The server is warming up, please try again." 
+                    : error.message 
             });
-            setIsSubmitting(false); // Enable button to try again
+            setIsSubmitting(false);
         }
     };
 
@@ -131,13 +156,24 @@ const Booking = () => {
         ));
     }, [selectedSeat]);
 
-    if (!flight) return <div className="loader"><h2>Redirecting...</h2></div>;
+    // Handle invalid entry (Direct URL hit without selecting a flight)
+    if (!flight) return (
+        <div className="loader" style={{paddingTop: '200px', textAlign: 'center'}}>
+            <MdInfo size={50} color="#003580" />
+            <h2>Session Mismatch</h2>
+            <p>Please select a flight from the results page first.</p>
+            <button className="modify-btn" onClick={() => navigate('/flights')} style={{marginTop: '20px'}}>Back to Search</button>
+        </div>
+    );
 
     return (
         <div className="booking-page">
             <div className="container booking-grid">
                 
-                {/* DYNAMIC ALERT CARD & LOADING SCREEN */}
+                {/* 
+                  BRANDED PRODUCTION MODAL 
+                  This replaces the basic Alert/Process popups.
+                */}
                 {alertConfig.show && (
                     <div className="custom-overlay">
                         <div className={`status-card ${alertConfig.type}`}>
@@ -149,10 +185,10 @@ const Booking = () => {
                             <h3>{alertConfig.title}</h3>
                             <p>{alertConfig.message}</p>
                             
-                            {alertConfig.id && <div className="ref-tag">TRX-REF: {alertConfig.id}</div>}
+                            {alertConfig.id && <div className="ref-tag">VAULT-REF: {alertConfig.id}</div>}
                             
                             {alertConfig.type === 'success' && (
-                                <div className="auto-redirect-msg">Generating Boarding Pass...</div>
+                                <div className="auto-redirect-msg">Generating digital assets...</div>
                             )}
 
                             {alertConfig.type === 'error' && (
@@ -164,38 +200,56 @@ const Booking = () => {
                     </div>
                 )}
 
+                {/* LEFT SIDE: SEAT SELECTOR */}
                 <div className="seat-selection-container">
-                    <div className="flight-promo-banner" style={{backgroundImage: `url("https://i.pinimg.com/736x/62/9a/96/629a9689618ee84d9088ba4a73e2e2f6.jpg")`}}>
+                    <div className="flight-promo-banner" style={{backgroundImage: `url("https://images.unsplash.com/photo-1542296332-2e4473faf563?w=800")`}}>
                         <div className="banner-overlay"></div>
                         <div className="quotation-box">
                             <MdFormatQuote className="quote-icon" size={32} />
-                            <p>Adventure awaits in <span>{flight.destination}</span>. Confirm your preferred seat to continue.</p>
+                            <p>Adventure awaits in <span>{flight.destination}</span>. Your comfort is our priority.</p>
                         </div>
                     </div>
                     <div className="airplane-cabin"><div className="cockpit">COCKPIT</div><div className="cabin-rows">{SeatMap}</div></div>
                 </div>
 
+                {/* RIGHT SIDE: SUMMARY & TICKET FORM */}
                 <div className="booking-form-container">
                     <div className="summary-box">
-                        <h4>{flight.airline} Aviation</h4>
-                        <p style={{fontSize: '13px'}}><MdFlight /> Flight: <strong>{schedule?.code || "TG-772"}</strong> | {flight.origin} → {flight.destination}</p>
-                        <div className="sum-price"><span>Final Total:</span><strong>₹{Number(flight.price).toLocaleString('en-IN')}</strong></div>
-                        <div className={`seat-badge ${selectedSeat ? 'active' : ''}`}>{selectedSeat ? `CONFIRMED SEAT: ${selectedSeat}` : "PLEASE SELECT A SEAT"}</div>
+                        <div className="air-pill">{flight.airline} Official</div>
+                        <p style={{fontSize: '13px', margin: '15px 0'}}>
+                            <MdFlight /> Flight: <strong>{schedule?.code || "TG-702"}</strong> | {flight.origin} → {flight.destination}
+                        </p>
+                        <div className="sum-price">
+                            <span>Final Bill:</span>
+                            <strong>₹{Number(flight.price).toLocaleString('en-IN')}</strong>
+                        </div>
+                        <div className={`seat-badge ${selectedSeat ? 'active' : ''}`}>
+                            {selectedSeat ? `CONFIRMED SEAT: ${selectedSeat}` : "PLEASE CLICK A SEAT"}
+                        </div>
                     </div>
 
                     <form className="passenger-form" onSubmit={handleLocalBooking}>
-                        <h3>Passenger & Security Details</h3>
-                        <div className="form-group"><label><MdPerson /> Traveler Name</label><input type="text" name="name" onChange={handleInputChange} placeholder="Full Name" required /></div>
-                        <div className="form-group"><label><MdEmail /> Contact Email</label><input type="email" name="email" onChange={handleInputChange} placeholder="For E-ticket" required /></div>
-                        <div className="form-group"><label><MdPhone /> Mobile</label><input type="tel" name="phone" onChange={handleInputChange} placeholder="Phone Number" required /></div>
-                        
-                        <button type="submit" disabled={isSubmitting || !selectedSeat} className="payment-btn">
-                            {isSubmitting ? "FINALIZING TRANSACTION..." : `Confirm Seat & Book`}
-                        </button>
-                        
-                        <div className="vault-note" style={{marginTop:'15px', fontSize:'11px', color:'#94a3b8', textAlign:'center'}}>
-                            <MdSecurity /> Secured via TravelGo Instant Square.
+                        <h3>Traveller Information</h3>
+                        <div className="form-group">
+                            <label><MdPerson /> Full Name (As per Govt ID)</label>
+                            <input type="text" name="name" onChange={handleInputChange} placeholder="Passenger Name" required />
                         </div>
+                        <div className="form-group">
+                            <label><MdEmail /> Contact Email</label>
+                            <input type="email" name="email" value={formData.email} readOnly style={{backgroundColor: '#f8fafc', color: '#94a3b8'}} />
+                        </div>
+                        <div className="form-group">
+                            <label><MdPhone /> Phone Number</label>
+                            <input type="tel" name="phone" onChange={handleInputChange} placeholder="10 Digits" required />
+                        </div>
+                        
+                        <div className="security-notice" style={{marginBottom: '20px', fontSize: '11px', color: '#64748b'}}>
+                            <MdSecurity /> Request squared at {locationInfo}. 256-bit SSL protection active.
+                        </div>
+
+                        <button type="submit" disabled={isSubmitting || !selectedSeat} className="payment-btn">
+                            {isSubmitting ? "SQUARING DATA..." : `Confirm Seat & Book`}
+                        </button>
                     </form>
                 </div>
             </div>
