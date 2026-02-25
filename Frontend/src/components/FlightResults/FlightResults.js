@@ -41,47 +41,47 @@ const FlightResults = () => {
   const itemsPerPage = 5; 
 
   // PHASE 1: Fetch Raw Data Once
-// FIND THIS in FlightResults.js
-useEffect(() => {
-  window.scrollTo(0, 0);
-  setLoading(true);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setLoading(true);
 
-  // 1. Fetch RAW data from Django
-  fetch('https://travelgo-django.onrender.com/api/flights/')
-    .then((res) => res.json())
-    .then((data) => {
-      // DEBUG: Look in your F12 console to see if data arrives
-      console.log("Full Flight Data:", data); 
+    fetch('https://travelgo-django.onrender.com/api/flights/')
+      .then((res) => {
+          if (!res.ok) throw new Error("Connection failed");
+          return res.json();
+      })
+      .then((data) => {
+        // DEBUG: Right-click in your browser -> Inspect -> Console. 
+        // See if you see the 100 flights here.
+        console.log("Raw API Data:", data); 
 
-      // CRITICAL FIX: setAllFlights must get the WHOLE data 
-      // so the Airlines sidebar always shows all options
-      setAllFlights(data); 
+        // FIX: Always save the FULL data to allFlights for the Sidebar filters
+        setAllFlights(data); 
 
-      // 2. Perform initial filtering based on Home Search
-      const searchFrom = (searchParams.from || "").toLowerCase().trim();
-      const searchTo = (searchParams.to || "").toLowerCase().trim();
+        // 2. Initial filter logic (from Hero.js search)
+        const sFrom = (searchParams.from || "").toLowerCase().trim();
+        const sTo = (searchParams.to || "").toLowerCase().trim();
 
-      const initial = data.filter((f) => 
-        (f.origin || "").toLowerCase().includes(searchFrom) &&
-        (f.destination || "").toLowerCase().includes(searchTo)
-      );
+        if (!sFrom && !sTo) {
+          // If the user arrived here without searching, show all
+          setFilteredFlights(data);
+        } else {
+          const initialResults = data.filter((f) => 
+            f.origin.toLowerCase().includes(sFrom) &&
+            f.destination.toLowerCase().includes(sTo)
+          );
+          setFilteredFlights(initialResults);
+        }
 
-      // 3. Set display flights
-      setFilteredFlights(initial);
-
-      if (data.length > 0) {
-          const prices = data.map(f => parseFloat(f.price));
-          setMaxPrice(Math.max(...prices));
-      }
-      setLoading(false);
-    })
-    .catch((err) => {
-        console.error("Fetch error:", err);
         setLoading(false);
-    });
-}, [searchParams]);
+      })
+      .catch((err) => {
+          console.error("Fetch error:", err);
+          setLoading(false);
+      });
+  }, [searchParams]);
 
-  // PHASE 2: Filtering logic runs whenever dependencies chang
+  // PHASE 2: Filtering logic runs whenever dependencies change
   useEffect(() => {
   // Wait until allFlights has data
   if (allFlights.length === 0) return;
