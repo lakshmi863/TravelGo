@@ -6,8 +6,8 @@ import {
   MdWbSunny, 
   MdNightlightRound, 
   MdWbTwilight,
-  MdNavigateBefore, // Added for Pagination
-  MdNavigateNext     // Added for Pagination
+  MdNavigateBefore,
+  MdNavigateNext     
 } from 'react-icons/md';
 import './FlightResults.css';
 
@@ -29,50 +29,64 @@ const FlightResults = () => {
   };
 
   const searchParams = useMemo(() => location.state || {}, [location.state]);
-  const [allFlights, setAllFlights] = useState([]);
-  const [filteredFlights, setFilteredFlights] = useState([]);
+  const [allFlights, setAllFlights] = useState([]); // Will store RAW data
+  const [filteredFlights, setFilteredFlights] = useState([]); 
   const [loading, setLoading] = useState(true);
-  const [maxPrice, setMaxPrice] = useState(25000);
+  
+  // Set Max Price higher (1 Lakh) to accommodate international flights seen in your admin (72k)
+  const [maxPrice, setMaxPrice] = useState(100000); 
   const [selectedAirlines, setSelectedAirlines] = useState([]);
 
-  // --- PAGINATION STATES ---
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; 
 
+  // PHASE 1: Fetch Raw Data Once
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
     fetch('https://travelgo-django.onrender.com/api/flights/')
       .then((res) => res.json())
       .then((data) => {
-        const initial = data.filter((f) => 
-          f.origin.toLowerCase().includes(searchParams.from?.toLowerCase() || "") &&
-          f.destination.toLowerCase().includes(searchParams.to?.toLowerCase() || "")
-        );
-        setAllFlights(initial);
-        setFilteredFlights(initial);
-        if (initial.length > 0) {
-            const prices = initial.map(f => parseFloat(f.price));
-            setMaxPrice(Math.max(...prices));
-        }
+        setAllFlights(data); // Save everything!
         setLoading(false);
       })
       .catch((err) => {
-          console.error("Fetch error:", err);
+          console.error("API Fetch error:", err);
           setLoading(false);
       });
-  }, [searchParams]);
+  }, []);
 
+  // PHASE 2: Filtering logic runs whenever dependencies change
   useEffect(() => {
-    let result = allFlights;
-    result = result.filter(f => parseFloat(f.price) <= maxPrice);
-    if (selectedAirlines.length > 0) {
-      result = result.filter(f => selectedAirlines.includes(f.airline));
-    }
-    setFilteredFlights(result);
-    setCurrentPage(1); // Reset to first page when filters change
-  }, [maxPrice, selectedAirlines, allFlights]);
+    if (allFlights.length === 0) return;
 
-  // --- PAGINATION LOGIC ---
+    let results = allFlights;
+
+    // 1. Filter by Origin (Case insensitive + Trimming)
+    const fromQuery = (searchParams.from || "").trim().toLowerCase();
+    if (fromQuery) {
+        results = results.filter(f => (f.origin || "").toLowerCase().includes(fromQuery));
+    }
+
+    // 2. Filter by Destination
+    const toQuery = (searchParams.to || "").trim().toLowerCase();
+    if (toQuery) {
+        results = results.filter(f => (f.destination || "").toLowerCase().includes(toQuery));
+    }
+
+    // 3. Filter by Max Price
+    results = results.filter(f => parseFloat(f.price) <= maxPrice);
+
+    // 4. Filter by Airline Selection
+    if (selectedAirlines.length > 0) {
+      results = results.filter(f => selectedAirlines.includes(f.airline));
+    }
+
+    setFilteredFlights(results);
+    setCurrentPage(1); 
+  }, [allFlights, searchParams, maxPrice, selectedAirlines]);
+
+
   const totalPages = Math.ceil(filteredFlights.length / itemsPerPage);
   const indexOfLastFlight = currentPage * itemsPerPage;
   const indexOfFirstFlight = indexOfLastFlight - itemsPerPage;
@@ -95,15 +109,13 @@ const FlightResults = () => {
     return schedules[id % schedules.length];
   };
 
-  const stats = useMemo(() => {
-    const airlinesObj = {};
+  // Build statistics from the full search result
+  const airlineStats = useMemo(() => {
+    const counts = {};
     allFlights.forEach(f => {
-      const p = parseFloat(f.price);
-      if (!airlinesObj[f.airline] || p < airlinesObj[f.airline]) {
-        airlinesObj[f.airline] = p;
-      }
+      counts[f.airline] = counts[f.airline] ? counts[f.airline] + 1 : 1;
     });
-    return { airlines: airlinesObj };
+    return Object.keys(counts);
   }, [allFlights]);
 
   const toggleAirline = (airline) => {
@@ -118,15 +130,15 @@ const FlightResults = () => {
         
         <aside className="filters-sidebar">
           <div className="filter-section">
-            <h3>One Way Price</h3>
+            <h3>Max Ticket Price: ₹ {Number(maxPrice).toLocaleString('en-IN')}</h3>
             <input 
-                type="range" min="1000" max="40000" step="100"
+                type="range" min="1000" max="100000" step="500"
                 value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}
                 className="price-slider"
             />
             <div className="price-range-labels">
               <span>₹ 1,000</span>
-              <span>₹ {Number(maxPrice).toLocaleString('en-IN')}</span>
+              <span>₹ 1,00,000</span>
             </div>
           </div>
 
@@ -141,7 +153,7 @@ const FlightResults = () => {
 
           <div className="filter-section">
             <h3>Airlines</h3>
-            {Object.keys(stats.airlines).map(airline => (
+            {airlineStats.map(airline => (
               <div className="filter-item" key={airline}>
                 <label>
                   <input 
@@ -149,10 +161,9 @@ const FlightResults = () => {
                     checked={selectedAirlines.includes(airline)}
                     onChange={() => toggleAirline(airline)} 
                   /> 
-                  <img src={airlineLogos[airline]} alt="" style={{width: '18px', height: '18px', objectFit: 'contain', marginLeft: '5px'}} />
+                   <img src={airlineLogos[airline]} alt="" style={{width: '18px', height: '18px', objectFit: 'contain', marginLeft: '5px'}} />
                   {airline}
                 </label>
-                <span>₹ {stats.airlines[airline].toLocaleString('en-IN')}</span>
               </div>
             ))}
           </div>
@@ -160,19 +171,24 @@ const FlightResults = () => {
 
         <main className="results-main-content">
           <div className="results-top-bar">
-            <h2>{searchParams.from || "Anywhere"} <MdArrowForward /> {searchParams.to || "Anywhere"}</h2>
+            <h2>
+              {searchParams.from || "Anywhere"} 
+              <MdArrowForward style={{margin: '0 10px'}} /> 
+              {searchParams.to || "Anywhere"}
+            </h2>
+            <p style={{fontSize:'12px', color: '#666'}}>{filteredFlights.length} Flights Found</p>
             <button onClick={() => navigate('/')} className="modify-btn">Modify Search</button>
           </div>
 
           <div className="flight-list">
-            {currentFlights.map(flight => { // Note: changed from filteredFlights to currentFlights
+            {currentFlights.map(flight => { 
               const schedule = getFlightSchedule(flight.id);
               return (
                 <div key={flight.id} className="flight-card">
                   <div className="airline-col">
                     <div className="logo-container">
                         <img 
-                            src={airlineLogos[flight.airline] || "https://www.shutterstock.com/image-photo/bangkok-thailand-dec-14-2019-260nw-1591194427.jpg"} 
+                            src={airlineLogos[flight.airline] || "https://img.freepik.com/premium-vector/jet-airplane-flying-logo-template_135086-455.jpg"} 
                             alt={flight.airline} 
                             className="air-logo" 
                         />
@@ -191,7 +207,6 @@ const FlightResults = () => {
                   <div className="duration-col">
                     <span className="duration-label">{schedule.dur}</span>
                     <div className="path-container">
-                        <div className="path-line"></div>
                         <div className="teal-indicator"></div>
                     </div>
                     <span className="stops-label">{schedule.stops}</span>
@@ -224,10 +239,10 @@ const FlightResults = () => {
                 <div className="no-data">
                     <MdSearchOff size={60} />
                     <p>We couldn't find any flights matching those criteria.</p>
+                    <button className="modify-btn" onClick={() => {setMaxPrice(100000); setSelectedAirlines([])}}>Clear Local Filters</button>
                 </div>
             )}
 
-            {/* --- PAGINATION UI --- */}
             {totalPages > 1 && (
               <div className="pagination">
                 <button 
