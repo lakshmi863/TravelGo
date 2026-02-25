@@ -81,7 +81,7 @@ useEffect(() => {
     });
 }, [searchParams]);
 
-  // PHASE 2: Filtering logic runs whenever dependencies change
+  // PHASE 2: Filtering logic runs whenever dependencies chang
   useEffect(() => {
   // Wait until allFlights has data
   if (allFlights.length === 0) return;
