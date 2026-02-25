@@ -45,7 +45,7 @@ app.use(express.json());
 // 1. Initialize SQLite Database Table (For Auth)
 UserModel(); 
 
-// 2. Connect to MongoDB (For Hotel Bookings)
+
 mongoose.connect('mongodb://localhost:27017/travelgo')
   .then(() => console.log('✅ MongoDB Connected (Hotels DB)'))
   .catch(err => console.error('❌ MongoDB Connection Error:', err));
