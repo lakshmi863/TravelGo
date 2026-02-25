@@ -41,20 +41,45 @@ const FlightResults = () => {
   const itemsPerPage = 5; 
 
   // PHASE 1: Fetch Raw Data Once
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setLoading(true);
-    fetch('https://travelgo-django.onrender.com/api/flights/')
-      .then((res) => res.json())
-      .then((data) => {
-        setAllFlights(data); // Save everything!
+// FIND THIS in FlightResults.js
+useEffect(() => {
+  window.scrollTo(0, 0);
+  setLoading(true);
+
+  // 1. Fetch RAW data from Django
+  fetch('https://travelgo-django.onrender.com/api/flights/')
+    .then((res) => res.json())
+    .then((data) => {
+      // DEBUG: Look in your F12 console to see if data arrives
+      console.log("Full Flight Data:", data); 
+
+      // CRITICAL FIX: setAllFlights must get the WHOLE data 
+      // so the Airlines sidebar always shows all options
+      setAllFlights(data); 
+
+      // 2. Perform initial filtering based on Home Search
+      const searchFrom = (searchParams.from || "").toLowerCase().trim();
+      const searchTo = (searchParams.to || "").toLowerCase().trim();
+
+      const initial = data.filter((f) => 
+        (f.origin || "").toLowerCase().includes(searchFrom) &&
+        (f.destination || "").toLowerCase().includes(searchTo)
+      );
+
+      // 3. Set display flights
+      setFilteredFlights(initial);
+
+      if (data.length > 0) {
+          const prices = data.map(f => parseFloat(f.price));
+          setMaxPrice(Math.max(...prices));
+      }
+      setLoading(false);
+    })
+    .catch((err) => {
+        console.error("Fetch error:", err);
         setLoading(false);
-      })
-      .catch((err) => {
-          console.error("API Fetch error:", err);
-          setLoading(false);
-      });
-  }, []);
+    });
+}, [searchParams]);
 
   // PHASE 2: Filtering logic runs whenever dependencies change
   useEffect(() => {
