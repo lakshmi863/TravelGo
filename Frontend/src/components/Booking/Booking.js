@@ -18,6 +18,8 @@ const Booking = () => {
     const [selectedSeat, setSelectedSeat] = useState(null);
     const [locationInfo, setLocationInfo] = useState("Detecting...");
     const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+    
+    // UI MODAL CONFIG
     const [alertConfig, setAlertConfig] = useState({ show: false, type: '', title: '', message: '', id: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,7 +27,10 @@ const Booking = () => {
         window.scrollTo(0, 0);
         let devId = localStorage.getItem('travelgo_dev_id') || 'TG-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         localStorage.setItem('travelgo_dev_id', devId);
-        fetch('https://ipapi.co/json/').then(res => res.json()).then(data => setLocationInfo(`${data.city}, ${data.country_name}`)).catch(() => setLocationInfo("Location Restricted"));
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => setLocationInfo(`${data.city}, ${data.country_name}`))
+            .catch(() => setLocationInfo("Location Restricted"));
     }, []);
 
     const handleInputChange = (e) => {
@@ -33,20 +38,25 @@ const Booking = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * UPDATED SQUARING LOGIC:
+     * Now uses INSTANT BOOKING (Single Request) to avoid 400/CORS errors.
+     */
     const handleLocalBooking = async (e) => {
         e.preventDefault();
         if (!selectedSeat) {
-            setAlertConfig({ show: true, type: 'error', title: 'Seat Required', message: 'Please select a seat inside the cabin.' });
+            setAlertConfig({ show: true, type: 'error', title: 'Seat Required', message: 'Please tap a seat in the cabin map first.' });
             return;
         }
 
         setIsSubmitting(true);
-        // START LOADING: Immediately show the Processing modal
+        
+        // SHOW LOADING MODAL
         setAlertConfig({ 
             show: true, 
             type: 'process', 
-            title: 'Initialising Request', 
-            message: 'Securing transaction connection...' 
+            title: 'Securing Seat', 
+            message: 'Validating inventory and generating your TravelGo digital square...' 
         });
 
         const payload = {
@@ -62,52 +72,39 @@ const Booking = () => {
         };
 
         try {
-            // STEP 1: Creating Data in Django
-            const createRes = await fetch('https://travelgo-django.onrender.com/api/bookings/', {
+            // STEP 1: Combined Create & Verify Call
+            const response = await fetch('https://travelgo-django.onrender.com/api/bookings/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            const data = await createRes.json();
-            if (!createRes.ok) throw new Error(data.message || "Failed to create local reference.");
+            
+            const result = await response.json();
 
-            // UPDATE LOADING: Transition to Verification stage
-            setAlertConfig({ 
-                show: true, 
-                type: 'verify', 
-                title: 'Reference Generated', 
-                message: `Booking ${data.mock_order_id} recorded. Finalizing square in private vault...`, 
-                id: data.mock_order_id 
-            });
-
-            // Artificial short delay for a smoother UI feel
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            // STEP 2: Square/Verify call
-            const verifyRes = await fetch(`https://travelgo-django.onrender.com/api/bookings/${data.booking_id}/verify_payment/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (verifyRes.ok) {
-                const final = await verifyRes.json();
-                // FINAL SUCCESS: Show completion card
+            if (response.ok) {
+                // SUCCESS: Immediately update Modal to show verified transaction
                 setAlertConfig({ 
                     show: true, 
                     type: 'success', 
-                    title: 'Ticket Squared!', 
-                    message: 'Your payment verification is successful and data is squared.', 
-                    id: final.transaction_id 
+                    title: 'Booking Squared!', 
+                    message: `Success! Your ticket is confirmed. Digital boarding pass sent to ${formData.email}`, 
+                    id: result.transaction_id 
                 });
                 
-                // Keep the success screen for 2.5 seconds then navigate
-                setTimeout(() => navigate('/my-bookings'), 2500);
+                // Navigate to My Bookings after success animation
+                setTimeout(() => navigate('/my-bookings'), 2800);
             } else {
-                throw new Error("Local squaring verification failed.");
+                throw new Error(result.error || result.message || "Squaring Rejected by Server.");
             }
+
         } catch (error) {
-            setAlertConfig({ show: true, type: 'error', title: 'Process Error', message: error.message });
-            setIsSubmitting(false); // Reset button if there is an error
+            setAlertConfig({ 
+                show: true, 
+                type: 'error', 
+                title: 'Transaction Error', 
+                message: error.message 
+            });
+            setIsSubmitting(false); // Enable button to try again
         }
     };
 
@@ -134,39 +131,39 @@ const Booking = () => {
         ));
     }, [selectedSeat]);
 
-    if (!flight) return <div className="loader"><h2>Session Timeout</h2></div>;
+    if (!flight) return <div className="loader"><h2>Redirecting...</h2></div>;
 
     return (
         <div className="booking-page">
             <div className="container booking-grid">
                 
-                {/* NEW LOGIC CARD MODAL (Includes Processing Loader) */}
+                {/* DYNAMIC ALERT CARD & LOADING SCREEN */}
                 {alertConfig.show && (
                     <div className="custom-overlay">
                         <div className={`status-card ${alertConfig.type}`}>
                             <div className="card-icon-header">
-                                {alertConfig.type === 'process' && <MdHourglassTop className="ani-spin" />}
-                                {alertConfig.type === 'verify' && <MdSecurity className="ani-pulse" />}
+                                {alertConfig.type === 'process' && <MdAutorenew className="ani-spin" />}
                                 {alertConfig.type === 'success' && <MdCheckCircle />}
                                 {alertConfig.type === 'error' && <MdClose />}
                             </div>
                             <h3>{alertConfig.title}</h3>
                             <p>{alertConfig.message}</p>
                             
-                            {alertConfig.id && <div className="ref-tag">ID: {alertConfig.id}</div>}
+                            {alertConfig.id && <div className="ref-tag">TRX-REF: {alertConfig.id}</div>}
                             
                             {alertConfig.type === 'success' && (
-                                <div className="auto-redirect-msg">Preparing your boarding pass...</div>
+                                <div className="auto-redirect-msg">Generating Boarding Pass...</div>
                             )}
 
                             {alertConfig.type === 'error' && (
-                                <button className="modal-dismiss" onClick={() => setAlertConfig({ ...alertConfig, show: false })}>Dismiss</button>
+                                <button className="modal-dismiss-btn" onClick={() => setAlertConfig({ ...alertConfig, show: false })}>
+                                    Try Again
+                                </button>
                             )}
                         </div>
                     </div>
                 )}
 
-                {/* UI CONTENT */}
                 <div className="seat-selection-container">
                     <div className="flight-promo-banner" style={{backgroundImage: `url("https://i.pinimg.com/736x/62/9a/96/629a9689618ee84d9088ba4a73e2e2f6.jpg")`}}>
                         <div className="banner-overlay"></div>
@@ -181,19 +178,24 @@ const Booking = () => {
                 <div className="booking-form-container">
                     <div className="summary-box">
                         <h4>{flight.airline} Aviation</h4>
-                        <p style={{fontSize: '13px'}}><MdFlight /> Flight: <strong>{schedule?.code}</strong> | {flight.origin} → {flight.destination}</p>
+                        <p style={{fontSize: '13px'}}><MdFlight /> Flight: <strong>{schedule?.code || "TG-772"}</strong> | {flight.origin} → {flight.destination}</p>
                         <div className="sum-price"><span>Final Total:</span><strong>₹{Number(flight.price).toLocaleString('en-IN')}</strong></div>
+                        <div className={`seat-badge ${selectedSeat ? 'active' : ''}`}>{selectedSeat ? `CONFIRMED SEAT: ${selectedSeat}` : "PLEASE SELECT A SEAT"}</div>
                     </div>
-                    
+
                     <form className="passenger-form" onSubmit={handleLocalBooking}>
                         <h3>Passenger & Security Details</h3>
-                        <div className="form-group"><label><MdPerson /> Traveler Name</label><input type="text" name="name" onChange={handleInputChange} placeholder="As per ID" required /></div>
+                        <div className="form-group"><label><MdPerson /> Traveler Name</label><input type="text" name="name" onChange={handleInputChange} placeholder="Full Name" required /></div>
                         <div className="form-group"><label><MdEmail /> Contact Email</label><input type="email" name="email" onChange={handleInputChange} placeholder="For E-ticket" required /></div>
-                        <div className="form-group"><label><MdPhone /> Mobile</label><input type="tel" name="phone" onChange={handleInputChange} placeholder="10 Digits" required /></div>
+                        <div className="form-group"><label><MdPhone /> Mobile</label><input type="tel" name="phone" onChange={handleInputChange} placeholder="Phone Number" required /></div>
                         
                         <button type="submit" disabled={isSubmitting || !selectedSeat} className="payment-btn">
                             {isSubmitting ? "FINALIZING TRANSACTION..." : `Confirm Seat & Book`}
                         </button>
+                        
+                        <div className="vault-note" style={{marginTop:'15px', fontSize:'11px', color:'#94a3b8', textAlign:'center'}}>
+                            <MdSecurity /> Secured via TravelGo Instant Square.
+                        </div>
                     </form>
                 </div>
             </div>
