@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { MdEmail, MdLock } from 'react-icons/md';
+import { MdEmail, MdLock, MdAutorenew } from 'react-icons/md'; // Added Autorenew for spinner
 import './Auth.css';
 
 const Login = () => {
@@ -23,17 +23,15 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Save token and email to identify the user
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userEmail', email);
-                alert("Welcome back to TravelGo!");
                 navigate('/');
-                window.location.reload(); // Refresh to update Navbar state
+                window.location.reload(); 
             } else {
                 alert(data.message || "Invalid Credentials");
             }
         } catch (error) {
-            alert("Connection error. Is the Backend running on port 5000?");
+            alert("Backend is starting up. Please wait 10 seconds and try again.");
         } finally {
             setLoading(false);
         }
@@ -53,6 +51,7 @@ const Login = () => {
                             placeholder="name@example.com" 
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            disabled={loading} // Disable during load
                             required 
                         />
                     </div>
@@ -64,12 +63,17 @@ const Login = () => {
                             placeholder="••••••••" 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            disabled={loading} // Disable during load
                             required 
                         />
                     </div>
 
-                    <button type="submit" className="auth-btn" disabled={loading}>
-                        {loading ? "Verifying..." : "Login"}
+                    <button type="submit" className={`auth-btn ${loading ? 'loading' : ''}`} disabled={loading}>
+                        {loading ? (
+                            <>
+                                <MdAutorenew className="ani-spin" /> Verifying...
+                            </>
+                        ) : "Login"}
                     </button>
                 </form>
 

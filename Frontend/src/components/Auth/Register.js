@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { MdEmail, MdLock, MdSecurity } from 'react-icons/md';
+import { MdEmail, MdLock, MdSecurity, MdAutorenew } from 'react-icons/md';
 import './Auth.css';
 
 const Register = () => {
@@ -29,13 +29,13 @@ const Register = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert("Account created successfully! Check your email for a welcome message.");
+                alert("Account created! Check your email for a welcome message.");
                 navigate('/login');
             } else {
                 alert(data.message || "Registration failed");
             }
         } catch (error) {
-            alert("Server connection error.");
+            alert("Connection error. Server is warming up.");
         } finally {
             setLoading(false);
         }
@@ -54,6 +54,7 @@ const Register = () => {
                             type="email" 
                             placeholder="your@email.com" 
                             onChange={(e) => setFormData({...formData, email: e.target.value})}
+                            disabled={loading}
                             required 
                         />
                     </div>
@@ -64,6 +65,7 @@ const Register = () => {
                             type="password" 
                             placeholder="8+ characters" 
                             onChange={(e) => setFormData({...formData, password: e.target.value})}
+                            disabled={loading}
                             required 
                         />
                     </div>
@@ -74,12 +76,17 @@ const Register = () => {
                             type="password" 
                             placeholder="Repeat password" 
                             onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                            disabled={loading}
                             required 
                         />
                     </div>
 
-                    <button type="submit" className="auth-btn" disabled={loading}>
-                        {loading ? "Creating Account..." : "Register Now"}
+                    <button type="submit" className={`auth-btn ${loading ? 'loading' : ''}`} disabled={loading}>
+                        {loading ? (
+                            <>
+                                <MdAutorenew className="ani-spin" /> Registering...
+                            </>
+                        ) : "Register Now"}
                     </button>
                 </form>
 
