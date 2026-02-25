@@ -58,33 +58,31 @@ const FlightResults = () => {
 
   // PHASE 2: Filtering logic runs whenever dependencies change
   useEffect(() => {
-    if (allFlights.length === 0) return;
+  // Wait until allFlights has data
+  if (allFlights.length === 0) return;
 
-    let results = allFlights;
+  let results = allFlights;
 
-    // 1. Filter by Origin (Case insensitive + Trimming)
-    const fromQuery = (searchParams.from || "").trim().toLowerCase();
-    if (fromQuery) {
-        results = results.filter(f => (f.origin || "").toLowerCase().includes(fromQuery));
-    }
+  // 1. IMPROVED SEARCH: If 'from' exists in state, filter. Else, keep current results.
+  const fromQuery = (searchParams?.from || "").trim().toLowerCase();
+  const toQuery = (searchParams?.to || "").trim().toLowerCase();
 
-    // 2. Filter by Destination
-    const toQuery = (searchParams.to || "").trim().toLowerCase();
-    if (toQuery) {
-        results = results.filter(f => (f.destination || "").toLowerCase().includes(toQuery));
-    }
+  if (fromQuery) {
+      results = results.filter(f => (f.origin || "").toLowerCase().includes(fromQuery));
+  }
+  if (toQuery) {
+      results = results.filter(f => (f.destination || "").toLowerCase().includes(toQuery));
+  }
 
-    // 3. Filter by Max Price
-    results = results.filter(f => parseFloat(f.price) <= maxPrice);
+  // 2. Fix the Slider limit - Ensure Mumbai (4200) fits in the ₹15k slider
+  results = results.filter(f => parseFloat(f.price) <= maxPrice);
 
-    // 4. Filter by Airline Selection
-    if (selectedAirlines.length > 0) {
-      results = results.filter(f => selectedAirlines.includes(f.airline));
-    }
+  if (selectedAirlines.length > 0) {
+    results = results.filter(f => selectedAirlines.includes(f.airline));
+  }
 
-    setFilteredFlights(results);
-    setCurrentPage(1); 
-  }, [allFlights, searchParams, maxPrice, selectedAirlines]);
+  setFilteredFlights(results);
+}, [allFlights, searchParams, maxPrice, selectedAirlines]);
 
 
   const totalPages = Math.ceil(filteredFlights.length / itemsPerPage);
