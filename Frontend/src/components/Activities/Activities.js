@@ -20,7 +20,7 @@ const Activities = () => {
 
     const loadData = () => {
         // Ensure you point to your Node backend Port 5000
-        fetch(`http://localhost:5000/api/activities?theme=${filter}`)
+        fetch(`https://travelgo-v7ha.onrender.com/api/activities?theme=${filter}`)
             .then(res => res.json())
             .then(data => {
                 // Sorting newly added items to the top
@@ -34,7 +34,7 @@ const Activities = () => {
     // Handle saving new activities (ADVENTURE, WATER, etc) to MongoDB
     const handleCreateEvent = async (e) => {
         e.preventDefault();
-        const res = await fetch('http://localhost:5000/api/activities/create-event', {
+        const res = await fetch('https://travelgo-v7ha.onrender.com/api/activities/create-event', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...formData, theme: filter })
@@ -54,7 +54,7 @@ const Activities = () => {
         
         try {
             // Initiate Booking Status
-            const res = await fetch('http://localhost:5000/api/activities/book', {
+            const res = await fetch('https://travelgo-v7ha.onrender.com/api/activities/book', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -67,7 +67,7 @@ const Activities = () => {
             const order = await res.json();
             
             // Squaring transaction ref in Local MongoDB
-            const verify = await fetch(`http://localhost:5000/api/activities/verify/${order._id}`, { method: 'PATCH' });
+            const verify = await fetch(`https://travelgo-v7ha.onrender.com/api/activities/verify/${order._id}`, { method: 'PATCH' });
             const final = await verify.json();
             
             alert(`Booking Squared Successfully!\nTransaction Proof: ${final.transaction_id}`);
