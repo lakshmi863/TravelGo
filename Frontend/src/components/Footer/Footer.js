@@ -18,7 +18,7 @@ const Footer = () => {
         {/* 1. BRAND SECTION */}
         <div className="footer-column brand-col">
           <Link to="/" className="footer-logo">
-            <img src="/TravelGo_logo.png" alt="TravelGo Logo" />
+            <img src="/TravelGo_logo1.png" alt="TravelGo Logo" />
           </Link>
           <p className="footer-desc">
             TravelGo is a premier digital travel partner dedicated to making global exploration 
