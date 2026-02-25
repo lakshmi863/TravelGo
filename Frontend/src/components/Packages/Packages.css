@@ -1,0 +1,142 @@
+.packages-page { padding-top: 130px; min-height: 100vh; }
+.package-filters { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+.filter-chip { 
+    background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 20px; 
+    border-radius: 50px; cursor: pointer; font-weight: 700; color: #64748b; 
+}
+.filter-chip.active { background: #003580; color: white; border-color: #003580; }
+
+.package-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
+.pkg-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.pkg-img-box { position: relative; height: 220px; }
+.pkg-img-box img { width: 100%; height: 100%; object-fit: cover; }
+.pkg-cat-tag { position: absolute; top: 15px; right: 15px; background: #f3a614; color: white; padding: 4px 12px; border-radius: 4px; font-weight: 800; font-size: 11px; }
+
+.pkg-info { padding: 20px; }
+.pkg-info h3 { font-size: 20px; margin-bottom: 10px; color: #1e293b; font-weight: 800; }
+.pkg-inclusions { font-size: 13px; color: #64748b; display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
+
+.pkg-footer { border-top: 1px solid #f1f5f9; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
+.pkg-price { font-weight: 800; color: #003580; font-size: 22px; }
+.pkg-price span { font-size: 11px; color: #94a3b8; }
+.pkg-footer button { background: #003580; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 800; cursor: pointer; }
+
+/* Detail View */
+.pkg-detail-view .detail-card { background: white; border-radius: 15px; overflow: hidden; max-width: 800px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.pkg-detail-view img { width: 100%; height: 400px; object-fit: cover; }
+.bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+.bundle-item { background: #f8fafc; padding: 15px; border-radius: 10px; }
+.bundle-item h4 { display: flex; align-items: center; gap: 8px; color: #003580; margin-bottom: 8px; }
+
+.book-pkg-btn { background: #f3a614; color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-weight: 800; margin-top: 30px; cursor: pointer; }
+
+
+
+/* ==========================================
+   PACKAGES MOBILE RESPONSIVENESS
+   ========================================== */
+
+/* Standard Mobile Phones & Tablets (Under 768px) */
+@media (max-width: 768px) {
+    .packages-page {
+        padding-top: 100px; /* Reduced space for mobile headers */
+        padding-bottom: 40px;
+    }
+
+    /* 1. Category Filters - Allow swiping if they get too crowded */
+    .package-filters {
+        display: flex;
+        flex-wrap: nowrap; /* Change from wrap to scrollable line */
+        overflow-x: auto;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Hide scrollbar Firefox */
+    }
+    .package-filters::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+
+    .filter-chip {
+        white-space: nowrap;
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    /* 2. Package Grid Adjustments */
+    .package-grid {
+        grid-template-columns: 1fr; /* Force 1 column on mobile */
+        gap: 20px;
+    }
+
+    .pkg-img-box {
+        height: 180px; /* Shorter image height */
+    }
+
+    .pkg-info h3 {
+        font-size: 18px;
+    }
+
+    /* 3. Detail View Responsiveness */
+    .pkg-detail-view .detail-card {
+        width: 100%;
+        border-radius: 0; /* Snap to edges on phone */
+    }
+
+    .pkg-detail-view img {
+        height: 250px;
+    }
+
+    /* Important: Stack the inclusions (Flight | Hotel) vertically */
+    .bundle-grid {
+        grid-template-columns: 1fr; 
+        gap: 15px;
+    }
+
+    .bundle-item {
+        padding: 12px;
+    }
+
+    .bundle-item p {
+        font-size: 13px;
+    }
+
+    .pricing-box h2 {
+        font-size: 24px;
+        margin-top: 15px;
+    }
+}
+
+/* Extra Small Phones (Under 480px) */
+@media (max-width: 480px) {
+    .pkg-info {
+        padding: 15px;
+    }
+
+    .pkg-footer {
+        flex-direction: column; /* Stack Price and Button */
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .pkg-footer button {
+        width: 100%; /* Tap target easier for thumbs */
+        padding: 12px;
+    }
+
+    .pkg-price {
+        font-size: 20px;
+    }
+
+    /* Detail View Adjustments */
+    .pkg-detail-view .content {
+        padding: 20px;
+    }
+
+    .pkg-detail-view h1 {
+        font-size: 22px;
+    }
+
+    .book-pkg-btn {
+        padding: 14px;
+        font-size: 15px;
+    }
+}

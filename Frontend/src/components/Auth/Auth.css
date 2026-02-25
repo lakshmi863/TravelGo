@@ -1,0 +1,158 @@
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(rgba(0, 53, 128, 0.8), rgba(0, 53, 128, 0.8)), 
+                url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.auth-card {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.auth-card h2 {
+    color: #003580;
+    font-weight: 800;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.auth-card p {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-box {
+    position: relative;
+    text-align: left;
+}
+
+.input-box label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #003580;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-box input:focus {
+    border-color: #f3a614;
+    box-shadow: 0 0 0 3px rgba(243, 166, 20, 0.1);
+}
+
+.auth-btn {
+    background: #f3a614;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.auth-btn:hover {
+    background: #e29509;
+    transform: translateY(-2px);
+}
+
+.auth-footer {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.auth-footer a {
+    color: #f3a614;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+   ========================================== */
+
+/* Standard Tablets & Phones (768px and below) */
+@media (max-width: 768px) {
+    .auth-page {
+        padding: 20px; /* Adds space around the card so it doesn't touch screen edges */
+        align-items: flex-start; /* Better for mobile keyboards when scrolling is needed */
+        padding-top: 50px;
+    }
+
+    .auth-card {
+        padding: 30px 25px; /* Reduced internal padding to give more room to inputs */
+        max-width: 100%; /* Take full available width up to the 400px limit */
+    }
+}
+
+/* Standard Mobile Phones (480px and below) */
+@media (max-width: 480px) {
+    .auth-card h2 {
+        font-size: 24px; /* Slightly smaller heading */
+    }
+
+    .auth-card p {
+        margin-bottom: 20px; /* Reduced space */
+        font-size: 13px;
+    }
+
+    .auth-form {
+        gap: 15px; /* Tighter inputs for small screens */
+    }
+
+    .input-box input {
+        padding: 10px 12px; /* Slimmer inputs */
+        font-size: 16px; /* Prevents iOS auto-zoom on input focus */
+    }
+
+    .auth-btn {
+        padding: 12px;
+        font-size: 15px;
+    }
+}
+
+/* Handling Short Screens (Landscape orientation or very small phones) */
+@media (max-height: 600px) {
+    .auth-page {
+        align-items: flex-start;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+}

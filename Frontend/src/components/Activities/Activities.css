@@ -1,0 +1,137 @@
+.activities-page { padding-top: 100px; background: #f8fafc; min-height: 100vh; padding-bottom: 50px; }
+.act-banner { background: #003580; color: white; padding: 60px 20px; text-align: center; }
+.act-controls { display: flex; justify-content: space-between; margin: 30px 0; align-items: center; }
+.category-bar button { background: white; border: 1.5px solid #cbd5e1; padding: 10px 20px; border-radius: 50px; font-weight: 800; color: #64748b; cursor: pointer; margin-right: 10px; }
+.category-bar button.active { background: #f3a614; color: white; border-color: #f3a614; }
+
+.add-event-btn { background: #003580; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
+.form-container { background: white; padding: 30px; border-radius: 15px; border: 2px solid #ebf3ff; margin-bottom: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+.form-container form { display: flex; flex-direction: column; gap: 15px; }
+.form-container .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.form-container input, .form-container textarea { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; }
+.form-container button { background: #003580; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+
+.activities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+.act-card { background: white; border-radius: 15px; overflow: hidden; border: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+.act-card img { height: 180px; width: 100%; object-fit: cover; }
+.act-card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+.cat-badge { font-size: 10px; font-weight: 800; color: #f3a614; text-transform: uppercase; margin-bottom: 5px; display: block; }
+.act-card-content h3 { font-size: 18px; color: #1e293b; margin-bottom: 10px; font-weight: 800; }
+.desc { font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.meta { display: flex; gap: 15px; font-size: 12px; color: #94a3b8; font-weight: 700; margin-bottom: 15px; }
+.footer { margin-top: auto; padding-top: 15px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+.footer strong { font-size: 24px; color: #003580; font-weight: 900; }
+.footer button { background: #003580; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+/* Modal */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+.modal-inner { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; }
+.alert-square { background: #ecfdf5; color: #059669; padding: 10px; border-radius: 8px; border: 1px solid #10b981; font-size: 12px; font-weight: 800; margin: 20px 0; }
+.finalize-btn { background: #f3a614; color: white; border: none; width: 100%; padding: 15px; border-radius: 10px; font-weight: 800; font-size: 16px; cursor: pointer; }
+.close-link { background: none; border: none; color: #64748b; margin-top: 15px; font-weight: 700; cursor: pointer; }
+
+
+
+@media (max-width: 768px) {
+    /* 1. Reduce Banner Size */
+    .act-banner {
+        padding: 40px 15px;
+    }
+    
+    .act-banner h1 {
+        font-size: 24px;
+    }
+
+    /* 2. Fix Controls (Filter & Add Button) */
+    .act-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    /* 3. Allow Category Bar to scroll horizontally */
+    .category-bar {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
+        /* Hide scrollbar for clean look */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
+    .category-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-bar button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    /* 4. Make Form stack vertically (Rows) */
+    .form-container {
+        padding: 20px;
+    }
+
+    .form-container .row {
+        grid-template-columns: 1fr; /* 2 columns becomes 1 */
+        gap: 15px;
+    }
+
+    /* 5. Activities Grid - shrink card size slightly */
+    .activities-grid {
+        grid-template-columns: 1fr; /* Full width cards on mobile */
+        gap: 20px;
+    }
+
+    .act-card img {
+        height: 160px;
+    }
+
+    /* 6. Pricing & Buttons in Footer */
+    .footer strong {
+        font-size: 20px;
+    }
+
+    /* 7. Modal Tweaks */
+    .modal-inner {
+        padding: 25px 20px;
+        width: 95%;
+    }
+
+    .finalize-btn {
+        font-size: 14px;
+        padding: 12px;
+    }
+}
+
+/* ==========================================
+   EXTRA SMALL DEVICES (Below 480px)
+   ========================================== */
+
+@media (max-width: 480px) {
+    .act-banner h1 {
+        font-size: 20px;
+    }
+
+    .act-card-content h3 {
+        font-size: 16px;
+    }
+
+    .meta {
+        flex-direction: column; /* Stack Location and Time */
+        gap: 5px;
+    }
+
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .footer button {
+        width: 100%; /* Make button full width for easy tapping */
+    }
+}

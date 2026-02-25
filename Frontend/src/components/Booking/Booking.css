@@ -1,0 +1,469 @@
+/* ==========================================================================
+   PAGE STRUCTURE
+   ========================================================================== */
+.booking-page {
+    background-color: #f0f4f8; /* Soft blue-grey page background */
+    padding-top: 130px; /* Space for the floating TravelGo logo/Navbar */
+    min-height: 100vh;
+    padding-bottom: 60px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.booking-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr; /* Sidebar smaller than main selection area */
+    gap: 30px;
+    align-items: start;
+    max-width: 1250px !important;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   LEFT SIDE: BANNER & QUOTE
+   ========================================================================== */
+.seat-selection-container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.flight-promo-banner {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Places quote box at bottom of banner */
+}
+
+/* Gradient to ensure logo/navbar above it is visible */
+.banner-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 50%);
+    z-index: 1;
+}
+
+.quotation-box {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    text-align: center;
+    border-top: 4px solid #f3a614; /* Accent Orange */
+}
+
+.quote-icon {
+    font-size: 24px;
+    color: #f3a614;
+    opacity: 0.6;
+    margin-bottom: 5px;
+}
+
+.quotation-box p {
+    font-style: italic;
+    color: #444;
+    font-size: 14px;
+    margin: 0;
+}
+
+.quotation-box p span {
+    font-weight: 800;
+    color: #003580; /* TravelGo Blue */
+}
+
+/* ==========================================================================
+   LEFT SIDE: SEAT SELECTION UI
+   ========================================================================== */
+.seat-selection-container h3 {
+    padding: 30px 40px 10px;
+    font-weight: 800;
+    color: #333;
+}
+
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #666;
+}
+
+.s-box { 
+    width: 16px; height: 16px; border-radius: 3px; 
+    display: inline-block; vertical-align: middle; margin-right: 8px; 
+}
+.s-box.available { border: 1.5px solid #003580; background: #fff; }
+.s-box.taken { background: #d1d9e6; }
+.s-box.selected { background: #f3a614; }
+
+/* The Airplane Cabin Visual */
+
+
+
+.seat-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* Side-to-side gap between seats */
+    margin-bottom: 12px;
+}
+
+.row-number {
+    font-size: 10px;
+    font-weight: 800;
+    width: 20px;
+    color: #adb5bd;
+    text-align: center;
+}
+
+.seat-label { 
+    font-size: 10px; font-weight: 800; 
+    margin-top: -12px; /* Pulls seat text inside the icon slightly */
+    color: inherit;
+}
+
+/* Creating the center aisle between 3rd and 4th seats */
+.seat:nth-child(4) {
+    margin-left: 35px; 
+}
+
+/* Seat states */
+
+
+.seat:hover:not(.taken) { color: #f3a614; transform: scale(1.05); }
+
+/* ==========================================================================
+   RIGHT SIDE: SUMMARY & FORM
+   ========================================================================== */
+.booking-form-container {
+    position: sticky;
+    top: 130px;
+}
+
+.summary-box {
+    background: #003580; /* Primary Brand Color */
+    color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 53, 128, 0.2);
+}
+
+.summary-box h4 {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    font-weight: 800;
+}
+
+.summary-box p { font-size: 14px; margin-bottom: 8px; opacity: 0.9; }
+
+.sum-price {
+    font-size: 22px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.seat-badge {
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 700;
+    display: none;
+    border: 1px dashed rgba(255,255,255,0.3);
+}
+
+.seat-badge.active {
+    display: block;
+    background: #f3a614; /* Highlights in orange when selected */
+    color: #000;
+    border: none;
+}
+
+/* Form Styling */
+.passenger-form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.passenger-form h3 { margin-bottom: 25px; font-weight: 800; color: #333; }
+
+.form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #444;
+}
+
+.form-group input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #003580;
+    outline: none;
+}
+
+/* PAYMENT BUTTON */
+.payment-btn {
+    width: 100%;
+    padding: 16px;
+    background: #f3a614; /* Your accent orange-yellow */
+    border: none;
+    color: white;
+    font-weight: 800;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(243, 166, 20, 0.3);
+}
+
+.payment-btn:hover {
+    background: #e29509;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(243, 166, 20, 0.4);
+}
+
+.loader {
+    text-align: center;
+    padding: 200px 0;
+    font-weight: 800;
+    color: #003580;
+}
+
+
+.airplane-cabin {
+    /* Soft Blue Sky Gradient Background */
+    background: linear-gradient(135deg, #f0f7ff 0%, #e2eafc 100%);
+    
+    border-radius: 120px 120px 30px 30px;
+    padding: 60px 30px;
+    max-width: 440px;
+    margin: 20px auto 40px;
+    border: 3px solid #d3dae5;
+    position: relative; 
+    overflow: hidden;   
+    box-shadow: inset 0 0 50px rgba(0, 53, 128, 0.08);
+}
+
+/* Embedded Data URI SVG - This will NEVER break because the code is local */
+.airplane-cabin::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width: 85%; 
+    height: 85%;
+    
+    /* This is the actual SVG code converted to a string */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23003580' d='M448 336v-40L288 192V79.2c0-22.1-17.9-40.4-40-40.4s-40 18.3-40 40.4V192L48 296v40l160-48v108l-48 36v40l88-24 88 24v-40l-48-36V288l160 48z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    /* Adjust visibility here (0.04 is very subtle, 0.1 is strong) */
+    opacity: 0.05; 
+    z-index: 0; 
+    pointer-events: none; 
+}
+
+/* Ensure the Cockpit and Seats are ABOVE the watermark */
+.cockpit, .cabin-rows {
+    position: relative;
+    z-index: 2;
+}
+
+.cockpit {
+    text-align: center;
+    font-weight: 800;
+    color: #94a3b8; 
+    margin-bottom: 50px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 13px;
+    text-shadow: 0 1px 1px #fff;
+}
+
+/* Improved Seat Visibility */
+.seat {
+    cursor: pointer;
+    font-size: 32px;
+    color: #334155; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
+}
+
+.seat.taken {
+    color: #cbd5e1 !important;
+    cursor: not-allowed;
+    filter: none;
+    opacity: 0.5;
+}
+
+.seat.selected { 
+    color: #f3a614 !important; 
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 10px rgba(243, 166, 20, 0.5)); 
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS (Booking & Seat Map)
+   ========================================================================== */
+
+/* Tablet & Smaller Laptops */
+@media (max-width: 992px) {
+    .booking-grid {
+        grid-template-columns: 1fr; /* Stack Sidebar below the Cabin */
+        gap: 20px;
+    }
+
+    .booking-form-container {
+        position: static; /* Remove sticky position */
+    }
+
+    .booking-page {
+        padding-top: 110px; /* Bring content up slightly */
+    }
+}
+
+/* Standard Mobile Phones (768px and below) */
+@media (max-width: 768px) {
+    .booking-page {
+        padding-top: 100px;
+        padding-bottom: 40px;
+    }
+
+    /* Reduce Banner Height */
+    .flight-promo-banner {
+        height: 180px;
+    }
+
+    .quotation-box {
+        padding: 15px;
+    }
+
+    .quotation-box p {
+        font-size: 12px;
+    }
+
+    /* Header text adjustments */
+    .seat-selection-container h3 {
+        padding: 20px 20px 10px;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    /* Shrink the Seat Legend */
+    .seat-legend {
+        gap: 12px;
+        font-size: 11px;
+    }
+
+    /* IMPORTANT: Responsive Airplane Cabin */
+    .airplane-cabin {
+        padding: 40px 15px;
+        margin: 10px auto 30px;
+        border-radius: 80px 80px 20px 20px; /* Sharper curve for mobile */
+        max-width: 350px; /* Ensure it fits narrow phones */
+    }
+
+    .cockpit {
+        margin-bottom: 30px;
+        font-size: 11px;
+        letter-spacing: 2px;
+    }
+
+    /* Shrink Seat sizes to fit the width */
+    .seat {
+        font-size: 26px; /* Original was 32px */
+    }
+
+    .seat-row {
+        gap: 8px; /* Original was 15px */
+    }
+
+    .row-number {
+        width: 15px;
+        font-size: 9px;
+    }
+
+    /* Adjust the Aisle Width for Mobile */
+    .seat:nth-child(4) {
+        margin-left: 20px; /* Original was 35px */
+    }
+
+    /* Summary & Price UI */
+    .summary-box {
+        padding: 20px;
+    }
+
+    .sum-price {
+        font-size: 18px;
+    }
+
+    /* Passenger Form Tweaks */
+    .passenger-form {
+        padding: 20px;
+    }
+
+    .passenger-form h3 {
+        font-size: 18px;
+    }
+
+    .form-group input {
+        font-size: 16px; /* Prevents auto-zoom on mobile focus */
+        padding: 10px;
+    }
+}
+
+/* Extra Small Phones (Under 400px) */
+@media (max-width: 400px) {
+    .airplane-cabin {
+        max-width: 310px;
+    }
+
+    .seat {
+        font-size: 22px;
+    }
+
+    .seat-row {
+        gap: 5px;
+    }
+
+    .seat:nth-child(4) {
+        margin-left: 10px;
+    }
+
+    .payment-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}

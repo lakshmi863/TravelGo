@@ -1,0 +1,196 @@
+/* App.css */
+
+
+:root {
+  --primary-blue: #003580;
+  --accent-orange: #f3a614;
+  --light-blue: #ebf3ff;
+  --white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--light-blue);
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 5%;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+  color: white;
+}
+
+.logo { font-size: 28px; font-weight: 700; }
+.logo span { color: var(--accent-orange); }
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+}
+
+.nav-links li { cursor: pointer; font-weight: 500; }
+
+.nav-actions { display: flex; align-items: center; gap: 20px; }
+
+/* Hero Section */
+.hero {
+  height: 70vh;
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.1)), 
+              url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
+.hero h1 span { color: var(--accent-orange); }
+.hero p { max-width: 600px; font-size: 1.1rem; opacity: 0.9; }
+
+/* Search Box */
+.search-container {
+  margin-top: -60px; /* Overlap effect */
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 1100px;
+}
+
+.tabs {
+  display: flex;
+  margin-top: -55px;
+  margin-bottom: 25px;
+}
+
+.tab {
+  padding: 15px 25px;
+  background: #2a3e5c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.tab.active { background: #cbd8ec; color: var(--primary-blue); }
+.tab:first-child { border-radius: 8px 0 0 0; }
+
+.search-inputs {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr 1fr;
+  gap: 15px;
+  align-items: end;
+}
+
+.input-group { display: flex; flex-direction: column; text-align: left; }
+.input-group label { font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; color: #555; }
+.input-group input, .input-group select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+.search-btn {
+  background-color: var(--accent-orange);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Sections */
+.section-header { text-align: center; margin: 60px 0 40px; color: var(--primary-blue); font-size: 2rem; }
+
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* Card Component */
+.card {
+  position: relative;
+  height: 400px;
+  border-radius: 15px;
+  overflow: hidden;
+  color: white;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease;
+}
+
+.card:hover { transform: translateY(-10px); }
+
+.card-overlay {
+  position: absolute;
+  bottom: 0; width: 100%; height: 50%;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  text-align: center;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 0; left: 0;
+  background: var(--accent-orange);
+  padding: 12px 18px;
+  border-bottom-right-radius: 20px;
+  font-weight: 700;
+}
+
+/* Small Promo Cards */
+.promo-card {
+  height: 220px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  background-size: cover;
+  position: relative;
+  color: white;
+}
+
+.btn-center {
+  background: var(--primary-blue);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 30px;
+  border: none;
+  margin: 30px auto;
+  display: block;
+  cursor: pointer;
+}

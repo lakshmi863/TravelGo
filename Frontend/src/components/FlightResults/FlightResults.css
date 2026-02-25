@@ -1,0 +1,546 @@
+/* ==========================================================================
+   PAGE LAYOUT & CONTAINER
+   ========================================================================== */
+.results-page-wrapper {
+    background-color: #f4f7f9; /* Soft background color for the page */
+    padding-top: 110px; /* Space for absolute navbar */
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr; /* Fixed sidebar, flexible results */
+    gap: 20px;
+    max-width: 1250px !important;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* ==========================================================================
+   LEFT SIDEBAR: FILTERS
+   ========================================================================== */
+.filters-sidebar {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 110px; /* Keeps filters visible while scrolling through flights */
+}
+
+.filter-section {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #f2f2f2;
+    padding-bottom: 15px;
+}
+
+.filter-section:last-child {
+    border: none;
+}
+
+.filter-section h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 12px;
+    color: #4a4a4a;
+    align-items: center;
+}
+
+.filter-item label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.filter-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.filter-item span {
+    color: #888;
+    font-weight: 500;
+}
+
+/* Price Slider Styling */
+.price-slider {
+    width: 100%;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.price-range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+}
+
+/* Time Slot Boxes */
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.time-box {
+    border: 1px solid #e0e0e0;
+    padding: 10px 2px;
+    text-align: center;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 9px;
+    font-weight: 600;
+    color: #555;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.time-box span {
+    margin-top: 5px;
+}
+
+.time-box:hover {
+    border-color: #003580;
+    background-color: #f0f5ff;
+    color: #003580;
+}
+
+/* ==========================================================================
+   RIGHT CONTENT: RESULTS LIST
+   ========================================================================== */
+.results-top-bar {
+    background: #ffffff;
+    padding: 15px 25px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.results-top-bar h2 {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.modify-btn {
+    background: #003580;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   FLIGHT CARD (Matching Your Requirement Image)
+   ========================================================================== */
+.flight-card {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.5fr 1fr 1.4fr;
+    background: #ffffff;
+    padding: 25px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.flight-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+/* Col 1: Airline */
+.airline-col {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.air-logo {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.air-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: #000;
+}
+
+.air-code {
+    font-size: 12px;
+    color: #878787;
+    font-weight: 500;
+}
+
+/* Cols 2 & 4: Time / Destination */
+.time-col {
+    text-align: left;
+}
+
+.time-bold {
+    font-size: 24px;
+    font-weight: 800;
+    color: #000;
+    letter-spacing: -0.8px;
+    line-height: 1;
+}
+
+.city-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+    margin-top: 5px;
+}
+
+/* Col 3: Duration with Teal Path Line */
+.duration-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.duration-label {
+    font-size: 13px;
+    color: #878787;
+    font-weight: 500;
+}
+
+.path-container {
+    width: 100%;
+    height: 2px;
+    background: #e0e0e0; /* Gray base line */
+    margin: 10px 0;
+    position: relative;
+}
+
+.teal-indicator {
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background: #20e3b2; /* TEAL segment as per image requirement */
+}
+
+.stops-label {
+    font-size: 13px;
+    color: #556c7d;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+/* Col 5: Pricing and Book Button */
+.price-col {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.price-box {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.currency-symbol {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+}
+
+.price-val {
+    font-size: 26px;
+    font-weight: 900;
+    color: #000;
+}
+
+.per-adult {
+    font-size: 12px;
+    color: #878787;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* BOOK NOW BUTTON */
+.book-now-btn {
+    background-color: #003580; /* Primary TravelGo Blue */
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.book-now-btn:hover {
+    background-color: #f3a614; /* Orange accent on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* ==========================================================================
+   OTHER UI ELEMENTS
+   ========================================================================== */
+.no-data {
+    text-align: center;
+    padding: 100px 20px;
+    color: #999;
+}
+
+.loader {
+    text-align: center;
+    padding: 80px;
+    font-weight: 600;
+    color: #003580;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 992px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+    .filters-sidebar {
+        display: none; /* Hide filters on small screens or make into drawer */
+    }
+}
+
+.air-logo {
+    width: 45px;            /* Slightly larger for visibility */
+    height: 45px;
+    object-fit: contain;    /* CRITICAL: This ensures the logo stays proportional */
+    border-radius: 4px;     /* Optional, clean edge */
+}
+
+.logo-container {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;       /* White background if the logo has transparent edges */
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 40px 0;
+}
+
+.page-nav-btn, .page-num-btn {
+    border: 1px solid #e0e0e0;
+    background: white;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.page-num-btn.active {
+    background-color: #003580; /* Primary blue */
+    color: white;
+    border-color: #003580;
+}
+
+.page-num-btn:hover:not(.active), .page-nav-btn:hover:not(:disabled) {
+    background-color: #f0f5ff;
+    border-color: #003580;
+    color: #003580;
+}
+
+.page-nav-btn:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background-color: #fafafa;
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS (Flight Results)
+   ========================================================================== */
+
+/* Tablets and Laptops (Below 992px) */
+@media (max-width: 992px) {
+    .main-layout {
+        grid-template-columns: 1fr; /* Stack results full width */
+        gap: 0;
+    }
+
+    .filters-sidebar {
+        display: none; /* Hide sidebar (standard mobile UX uses a filter button) */
+    }
+
+    .results-page-wrapper {
+        padding-top: 100px;
+    }
+}
+
+/* Standard Mobile Devices (768px and below) */
+@media (max-width: 768px) {
+    .results-top-bar {
+        padding: 10px 15px;
+    }
+
+    .results-top-bar h2 {
+        font-size: 15px;
+        gap: 8px;
+    }
+
+    .modify-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    /* FLIGHT CARD RE-STRUCTURE */
+    .flight-card {
+        display: flex;
+        flex-direction: column; /* Stack sections vertically */
+        padding: 15px;
+        gap: 15px;
+        position: relative;
+    }
+
+    /* TOP ROW: Logo and Airline Info */
+    .airline-col {
+        width: 100%;
+        justify-content: flex-start;
+        border-bottom: 1px solid #f1f1f1;
+        padding-bottom: 10px;
+    }
+
+    .air-name {
+        font-size: 15px;
+    }
+
+    /* MIDDLE ROW: Flight Times & Path */
+    /* We create a grid for the journey part */
+    .time-col, .duration-col {
+        padding: 0;
+        text-align: center;
+    }
+
+    /* Logic: Group Departure, Duration, Arrival into one line */
+    .flight-card > div:nth-child(2),
+    .flight-card > div:nth-child(3),
+    .flight-card > div:nth-child(4) {
+        display: inline-block;
+        width: 100%;
+    }
+
+    /* Grouping Times horizontally */
+    .journey-row-mobile {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .time-bold {
+        font-size: 20px;
+    }
+
+    .city-name {
+        font-size: 12px;
+    }
+
+    .duration-label, .stops-label {
+        font-size: 11px;
+    }
+
+    /* BOTTOM ROW: Price and Action */
+    .price-col {
+        flex-direction: row; /* Horizontal price & button */
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        background: #f8fafd;
+        padding: 10px;
+        margin: 0 -15px -15px -15px; /* Snap to bottom edges of card */
+        width: calc(100% + 30px);
+    }
+
+    .per-adult {
+        margin-bottom: 0;
+    }
+
+    .price-val {
+        font-size: 22px;
+    }
+
+    .book-now-btn {
+        width: auto;
+        padding: 10px 25px;
+    }
+
+    /* Hide teal path indicators on mobile to clean up space */
+    .path-container {
+        display: none;
+    }
+}
+
+/* Small Phones (Below 480px) */
+@media (max-width: 480px) {
+    .time-bold {
+        font-size: 18px;
+    }
+    
+    .price-val {
+        font-size: 20px;
+    }
+
+    .results-top-bar h2 {
+        max-width: 60%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .pagination {
+        gap: 4px;
+    }
+
+    .page-nav-btn {
+        padding: 5px;
+    }
+}

@@ -1,0 +1,300 @@
+.main-footer {
+    background-color: #003580; /* TravelGo Deep Blue */
+    color: #ffffff;
+    padding-top: 80px;
+    font-family: 'Poppins', sans-serif;
+    border-top: 5px solid #f3a614; /* Orange highlight top border */
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 40px;
+    padding-bottom: 60px;
+}
+
+.footer-column h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #f3a614; /* Accent Orange */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Brand Section */
+.footer-logo img {
+    height: 70px;
+    margin-bottom: 20px;
+}
+
+.footer-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 25px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    background: #f3a614;
+    transform: translateY(-3px);
+}
+
+/* Links Section */
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s;
+}
+
+.footer-links a:hover {
+    color: #f3a614;
+    padding-left: 5px;
+}
+
+/* Contact Section */
+.contact-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+}
+
+.c-icon {
+    color: #f3a614;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.newsletter h4 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.n-input-group {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.n-input-group input {
+    background: transparent;
+    border: none;
+    padding: 10px;
+    color: white;
+    width: 100%;
+    outline: none;
+}
+
+.n-input-group button {
+    background: #f3a614;
+    border: none;
+    color: white;
+    padding: 0 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Footer Bottom Bar */
+.footer-bottom {
+    background-color: #002861; /* Darker Blue */
+    padding: 25px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.bottom-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-icons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.payment-icons img {
+    height: 20px;
+    filter: grayscale(1) brightness(2); /* Makes icons white and subtle */
+    opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-links a {
+        justify-content: center;
+    }
+    .social-links {
+        justify-content: center;
+    }
+    .contact-item {
+        justify-content: center;
+    }
+    .bottom-flex {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+
+/* ==========================================================================
+   COMPREHENSIVE MOBILE RESPONSIVENESS (Footer)
+   ========================================================================== */
+
+/* 1. Tablets and Large Phones (Between 600px and 1024px) */
+@media (max-width: 1024px) {
+    .main-footer {
+        padding-top: 60px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr; /* 2 Columns Layout */
+        gap: 40px 20px;
+        padding-bottom: 40px;
+    }
+
+    .footer-column.contact-col {
+        grid-column: span 1; /* Keep things even */
+    }
+}
+
+/* 2. Standard Mobile Phones (768px and below) */
+@media (max-width: 768px) {
+    .footer-column h3 {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .footer-desc {
+        font-size: 13px;
+    }
+
+    /* Newsletter stacking for better tap target */
+    .n-input-group {
+        flex-direction: column;
+        background: transparent;
+        gap: 10px;
+    }
+
+    .n-input-group input {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        width: 100%;
+    }
+
+    .n-input-group button {
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+/* 3. Small Mobile Phones (600px and below) */
+@media (max-width: 600px) {
+    .main-footer {
+        padding-top: 40px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr; /* 1 Column Stacked */
+        text-align: center;
+        gap: 35px;
+    }
+
+    .footer-logo img {
+        height: 55px;
+    }
+
+    .social-links, 
+    .footer-links a, 
+    .contact-item {
+        justify-content: center; /* Center icons and text */
+    }
+
+    .footer-links a:hover {
+        padding-left: 0; /* Remove side shift on center align */
+        color: #f3a614;
+    }
+
+    .footer-bottom {
+        padding: 20px 0;
+    }
+
+    .bottom-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .bottom-flex p {
+        font-size: 11px;
+        order: 2; /* Move text below payment icons */
+    }
+
+    .payment-icons {
+        order: 1;
+        justify-content: center;
+    }
+
+    .payment-icons img {
+        height: 18px;
+    }
+}
+
+/* 4. Tiny Screen Adjustments (Below 380px) */
+@media (max-width: 380px) {
+    .footer-column h3 {
+        font-size: 14px;
+    }
+    
+    .contact-item {
+        font-size: 12px;
+    }
+}
