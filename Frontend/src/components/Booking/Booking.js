@@ -92,11 +92,10 @@ const Booking = () => {
             alert(`Generating Local Reference: ${data.mock_order_id}. \nSquaring data in database...`);
 
             // STEP 3: FINAL VERIFICATION (Flips status to BOOKED and triggers Email)
-            const verifyRes = await fetch(`https://travelgo-django.onrender.com/api/bookings/${data.booking_id}/verify_payment/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
+           const verifyRes = await fetch(`https://travelgo-django.onrender.com/api/bookings/${data.booking_id}/verify_payment/`, {
+    method: 'POST', // Make sure this is POST
+    headers: { 'Content-Type': 'application/json' }
+});
             if (verifyRes.ok) {
                 const final = await verifyRes.json();
                 alert(`🎉 SUCCESS! Ticket Squaring Completed. \nID: ${final.transaction_id}`);
