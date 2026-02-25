@@ -79,7 +79,7 @@ const Booking = () => {
 
         try {
             // STEP 1: CREATE PENDING DATA (Step 1 of Squaring)
-            const createRes = await fetch('http://127.0.0.1:8000/api/bookings/', {
+            const createRes = await fetch('https://travelgo-django.onrender.com/api/bookings/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -92,7 +92,7 @@ const Booking = () => {
             alert(`Generating Local Reference: ${data.mock_order_id}. \nSquaring data in database...`);
 
             // STEP 3: FINAL VERIFICATION (Flips status to BOOKED and triggers Email)
-            const verifyRes = await fetch(`http://127.0.0.1:8000/api/bookings/${data.booking_id}/verify_payment/`, {
+            const verifyRes = await fetch(`https://travelgo-django.onrender.com/api/bookings/${data.booking_id}/verify_payment/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });

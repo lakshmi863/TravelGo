@@ -13,7 +13,7 @@ const Navbar = () => {
   useEffect(() => {
     if (token) {
       // Check if user has bookings in the Django Database
-      fetch('http://127.0.0.1:8000/api/bookings/')
+      fetch('https://travelgo-django.onrender.com/api/bookings/')
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data) && data.length > 0) {

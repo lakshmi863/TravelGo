@@ -40,7 +40,7 @@ const MyBookings = () => {
     }
 
     // Pass the email as a query parameter to your Django API
-    fetch(`http://127.0.0.1:8000/api/bookings/?email=${userEmail}`)
+    fetch(`https://travelgo-django.onrender.com/api/bookings/?email=${userEmail}`)
       .then(res => res.json())
       .then(data => {
         setBookings(Array.isArray(data) ? data : []);
@@ -59,7 +59,7 @@ const MyBookings = () => {
   const handleCancel = async (id) => {
     if (!window.confirm("Confirm cancellation? This will release your seat.")) return;
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/bookings/${id}/cancel_ticket/`, { method: 'POST' });
+      const response = await fetch(`https://travelgo-django.onrender.com/api/bookings/${id}/cancel_ticket/`, { method: 'POST' });
       if (response.ok) { alert("Flight Cancelled."); fetchBookings(); }
     } catch (error) { alert("Error connecting to server."); }
   };
@@ -76,7 +76,7 @@ const MyBookings = () => {
       price: meal.price.toString()
     };
     try {
-      await fetch('http://127.0.0.1:8000/api/food-orders/', {
+      await fetch('https://travelgo-django.onrender.com/api/food-orders/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)

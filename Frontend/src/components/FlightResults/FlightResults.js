@@ -41,7 +41,7 @@ const FlightResults = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetch('http://127.0.0.1:8000/api/flights/')
+    fetch('https://travelgo-django.onrender.com/api/flights/')
       .then((res) => res.json())
       .then((data) => {
         const initial = data.filter((f) => 
