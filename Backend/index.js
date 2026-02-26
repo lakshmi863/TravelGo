@@ -1,5 +1,5 @@
 // 1. ALWAYS LOAD ENVIRONMENT VARIABLES FIRST
-require('dotenv').config(); 
+require('dotenv').config(); // MUST BE THE VERY FIRST LINE
 
 const express = require('express');
 const cors = require('cors');
@@ -7,13 +7,13 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
-// 2. NOW IMPORT CONTROLLERS AND ROUTERS
+// Now import controllers
 const aiController = require('./src/controllers/AIController');
 const userRouter = require('./src/Routers/userRouter'); 
+const activityRouter = require('./src/Routers/activityRouter');
 const db = require('./src/Config/db'); 
 const UserModel = require('./src/Models/UserModel'); 
-const HotelBooking = require('./src/Models/HotelBookingModel'); 
-const activityRouter = require('./src/Routers/activityRouter');
+const HotelBooking = require('./src/Models/HotelBookingModel'); ;
 
 // Utils
 const sendHotelConfirmation = require('./src/utils/hotelEmail');
