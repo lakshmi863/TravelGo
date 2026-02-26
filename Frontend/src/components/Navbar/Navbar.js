@@ -48,19 +48,22 @@ const Navbar = () => {
         {/* --- NAVIGATION LINKS (Mobile and Desktop) --- */}
         {token && (
           <ul className={`nav-links ${isMobileMenuOpen ? 'mobile-active' : ''}`}>
-            <li>
-              <Link to="/hotels" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>Hotels</Link>
-            </li>
-            <li>
-              <Link to="/flights" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>Flights</Link>
-            </li>
-            {/* Show "My Bookings" inside the mobile menu for easy access */}
-            {hasFlightBookings && (
-              <li className="mobile-only">
-                <Link to="/my-bookings" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>My Bookings</Link>
-              </li>
-            )}
-          </ul>
+    <li>
+      <Link to="/hotels" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>
+        Hotels
+      </Link>
+    </li>
+    <li>
+      <Link to="/flights" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>
+        Flights
+      </Link>
+    </li>
+    <li className="mobile-only">
+      <Link to="/my-bookings" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>
+        My Bookings
+      </Link>
+    </li>
+</ul>
         )}
 
         <div className="nav-actions">

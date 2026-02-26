@@ -283,4 +283,102 @@
     font-size: 9px;
   }
 }
+/* --- Desktop Navbar Defaults --- */
+.navbar {
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 0;
+  z-index: 1000;
+  background: rgba(0, 53, 128, 0.95); /* Fixed background for visibility */
+}
 
+.navbar-container {
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.logo img { height: 50px; width: auto; }
+
+/* Desktop Navigation */
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+}
+
+.nav-links li a {
+  color: white !important;
+  text-decoration: none !important;
+  font-weight: 600;
+}
+
+.mobile-menu-toggle { display: none; }
+
+/* ==========================================
+   MOBILE RESPONSIVENESS (The Fix)
+   ========================================== */
+@media (max-width: 768px) {
+    /* 1. Show the Menu Icon */
+    .mobile-menu-toggle {
+        display: block;
+        color: #f3a614; /* Orange color for visibility */
+        cursor: pointer;
+        z-index: 2001; /* Higher than the menu */
+        order: 2; /* Moves icon after logo */
+        margin-right: 15px;
+    }
+
+    /* 2. Hide specific desktop elements */
+    .desktop-only, .nav-links li { display: none; }
+
+    /* 3. The Actual Menu Container */
+    .nav-links {
+        position: fixed; /* Layer on top of everything */
+        top: 0;
+        right: -100%; /* Off-screen to the right */
+        width: 80%; /* Takes most of the width */
+        height: 100vh;
+        background: #003580; /* Deep blue background */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 100px;
+        transition: 0.4s ease-in-out;
+        z-index: 2000;
+        gap: 0; /* Reset for mobile */
+        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    }
+
+    /* 4. Show the links when Active */
+    .nav-links.mobile-active {
+        right: 0; /* Slides into view */
+    }
+
+    .nav-links li {
+        display: block; /* Show list items in mobile mode */
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-links li a {
+        font-size: 1.2rem;
+        padding: 20px;
+        display: block;
+        width: 100%;
+    }
+
+    .logged-in-section {
+        order: 3;
+    }
+
+    /* Extra cleaning */
+    .user-greet { display: none !important; }
+}
