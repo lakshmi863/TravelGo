@@ -9,28 +9,37 @@ exports.askAI = async (req, res) => {
             return res.status(500).json({ error: "API Key missing" });
         }
 
-        // --- DIAGNOSTIC STEP: FIND OUT WHAT MODELS YOU ACTUALLY HAVE ---
-        console.log("🔍 Checking available models for your API Key...");
-        const listModelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-        const listResponse = await axios.get(listModelsUrl);
+        // --- THE "BRAIN" OF TRAVELGO ---
+        // This context is prepended to every user query so the AI knows its identity.
+        const systemContext = `
+        You are "TravelGo AI", the specialized digital assistant for the TravelGo travel platform.
         
-        // This will print a list in your console. Look for names like "models/gemini-..."
-        const availableModels = listResponse.data.models.map(m => m.name);
-        console.log("✅ Models available to you:", availableModels);
+        Information about this application:
+        - It is a Full-Stack application built using the MERN Stack (MongoDB, Express, React, Node.js) and Django.
+        - Primary Features:
+            1. Flight Search & Booking: Integrated with an interactive airplane seat map for seat selection.
+            2. Hotel Management: Users can search and book premium hotels by city.
+            3. Digital Boarding Passes: Available in the 'My Bookings' section.
+            4. In-Flight Services: Users can order specific meals (Veg Maharaja, Classic Chicken) after booking.
+            5. Local Activities: Themes include ADVENTURE, WATER, SIGHTSEEING, and FOOD.
+        
+        Response Rules:
+        - Be enthusiastic, professional, and concise.
+        - Always refer to the user's travel journey in the context of TravelGo.
+        - If a user asks "Who created you?", say you were built by the TravelGo Development Team.
+        - If asked about booking, guide them to the specific navigation links (Flights, Hotels, Activities).
+        
+        Context ends here.
+        User Question: ${message}`;
 
-        // We will try to find a model you are actually allowed to use
-        // Prefer 1.5-flash, then pro, then the first one in your list
-        let modelToUse = "";
-        if (availableModels.includes("models/gemini-1.5-flash")) modelToUse = "gemini-1.5-flash";
-        else if (availableModels.includes("models/gemini-pro")) modelToUse = "gemini-pro";
-        else modelToUse = availableModels[0].replace("models/", ""); // Use whatever you have
-
-        console.log(`🚀 Using assigned model: ${modelToUse}`);
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${apiKey}`;
+        // Using the model we confirmed works locally
+        const model = "gemini-1.5-flash"; 
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
         const payload = {
-            contents: [{ parts: [{ text: message }] }]
+            contents: [{
+                parts: [{ text: systemContext }] // We send the context + user question together
+            }]
         };
 
         const response = await axios.post(url, payload);
@@ -39,14 +48,7 @@ exports.askAI = async (req, res) => {
         res.status(200).json({ reply: replyText });
 
     } catch (error) {
-        console.error("--- AI SYSTEM ERROR ---");
-        if (error.response) {
-            console.error("Data:", JSON.stringify(error.response.data));
-            return res.status(error.response.status).json({
-                error: "Google AI Error",
-                message: error.response.data.error.message
-            });
-        }
-        res.status(500).json({ error: error.message });
+        console.error("--- AI ERROR ---");
+        res.status(500).json({ error: "TravelGo AI failed to respond." });
     }
 };
