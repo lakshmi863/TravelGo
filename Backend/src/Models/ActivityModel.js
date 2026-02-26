@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const activitySchema = new mongoose.Schema({
-    title: String,
-    city: String,
-    theme: { type: String, enum: ['ADVENTURE', 'WATER', 'SIGHTSEEING', 'FOOD'] },
-    price:{ type: Number, required: true }, 
+    title: { type: String, required: true },
+    city: { type: String, required: true },
+    // Removed image field
+    theme: { type: String, enum: ['ADVENTURE', 'WATER', 'SIGHTSEEING', 'FOOD'], required: true },
+    price: { type: Number, required: true }, 
     duration: String,
-    image: String,
     description: String
 });
 
@@ -16,7 +16,7 @@ const activityBookingSchema = new mongoose.Schema({
     userEmail: String,
     bookingDate: { type: Date, default: Date.now },
     status: { type: String, default: 'PENDING' },
-    localTransactionId: String, // For Squaring
+    localTransactionId: String, 
     amountPaid: Number
 });
 

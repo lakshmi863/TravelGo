@@ -135,3 +135,22 @@
         width: 100%; /* Make button full width for easy tapping */
     }
 }
+
+
+.theme-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 800;
+    color: white;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+/* Color codes for themes */
+.theme-header[data-theme='WATER'] { background: #0ea5e9; }
+.theme-header[data-theme='ADVENTURE'] { background: #10b981; }
+.theme-header[data-theme='FOOD'] { background: #f3a614; }
+.theme-header[data-theme='SIGHTSEEING'] { background: #6366f1; }
