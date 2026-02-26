@@ -1,20 +1,17 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// You can get a free API key from https://aistudio.google.com/
-const genAI = new GoogleGenerativeAI("AIzaSyAzZSPgMhldEIFQhqb8fcL2OCWi1IrjjCI");
+// Make sure it reads from the system environment, NOT a hardcoded string
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 exports.askAI = async (req, res) => {
     try {
         const { message } = req.body;
+        
+        // 500 error fix: Ensure model name is correct and key is valid
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        // Setting a System Prompt to keep the AI in "Travel Agent" mode
         const prompt = `
-            You are "TravelGo AI", a friendly travel assistant for the TravelGo website. 
-            Your goal is to help users find places, explain flight/hotel booking steps, 
-            and talk about potential travel offers. 
-            Current Date: ${new Date().toLocaleDateString()}
-            
+            You are "TravelGo AI", a friendly travel assistant. 
             User Question: ${message}
         `;
 
@@ -24,8 +21,8 @@ exports.askAI = async (req, res) => {
 
         res.status(200).json({ reply: text });
     } catch (error) {
-        console.error("AI Error:", error);
-        res.status(500).json({ error: "TravelGo AI is sleeping. Try later!" });
+        // Log the actual error to your Render dashboard so you can see it
+        console.error("Gemini AI Error:", error.message);
+        res.status(500).json({ error: "AI processing failed", details: error.message });
     }
 };
-

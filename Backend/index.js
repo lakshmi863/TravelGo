@@ -14,7 +14,7 @@ const activityRouter = require('./src/Routers/activityRouter');
 
 // Utils
 const sendHotelConfirmation = require('./src/utils/hotelEmail');
-
+require('dotenv').config();
 const app = express();
 // Priority: Render dynamic port -> or 5000 for local
 const PORT = process.env.PORT || 5000;
