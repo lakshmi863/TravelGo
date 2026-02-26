@@ -4,55 +4,50 @@ import './AIChat.css';
 
 const AIChat = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const initialBotGreeting = 'Hi! I am TravelGo AI. How can I help?';
+    
+    const [displayGreeting, setDisplayGreeting] = useState('');
+    const [greetingComplete, setGreetingComplete] = useState(false);
     const [messages, setMessages] = useState([]); 
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // POSITIONING LOGIC
-    // Set a default state. If null, CSS handles it.
-    const [position, setPosition] = useState({ x: null, y: null });
-    const [isMoving, setIsMoving] = useState(false);
-
     const chatBodyRef = useRef(null);
 
-    // Logic for mobile touch dragging
-    const handleTouchMove = (e) => {
-        // Prevent background scrolling while dragging
-        e.persist();
-        const touch = e.touches[0];
-        
-        // Offset so finger is in the center of the 60px icon
-        const newX = touch.clientX - 30; 
-        const newY = touch.clientY - 30;
-
-        setIsMoving(true);
-        setPosition({ x: newX, y: newY });
-    };
-
-    const handleTouchEnd = () => {
-        // Delay to distinguish between a "drag" and a "click"
-        setTimeout(() => setIsMoving(false), 100);
-    };
-
-    const openChat = () => {
-        // If the user was just moving the icon, don't open the chat
-        if (!isMoving) {
-            setIsOpen(true);
+    useEffect(() => {
+        let typingInterval;
+        if (isOpen) {
+            setDisplayGreeting('');
+            setGreetingComplete(false);
+            setMessages([]); 
+            setInput('');
+            let i = 0;
+            typingInterval = setInterval(() => {
+                if (initialBotGreeting[i]) {
+                    setDisplayGreeting((prev) => prev + initialBotGreeting[i]);
+                }
+                i++;
+                if (i >= initialBotGreeting.length) {
+                    clearInterval(typingInterval);
+                    setGreetingComplete(true);
+                    setMessages([{ type: 'bot', text: initialBotGreeting }]);
+                }
+            }, 50);
         }
-    };
+        return () => clearInterval(typingInterval);
+    }, [isOpen]);
 
-    // Auto-scroll chat
     useEffect(() => {
         if (chatBodyRef.current) {
             chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
         }
-    }, [messages, loading]);
+    }, [messages, displayGreeting, loading]);
 
-    // Handle Gemini API logic
     const handleSend = async () => {
         if (!input.trim()) return;
-        const userMsg = { type: 'user', text: input };
-        setMessages(prev => [...prev, userMsg]);
+        
+        const userMessage = { type: 'user', text: input };
+        setMessages((prevMessages) => [...prevMessages, userMessage]);
         setInput('');
         setLoading(true);
 
@@ -60,42 +55,26 @@ const AIChat = () => {
             const res = await fetch('https://travelgo-v7ha.onrender.com/api/ai/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMsg.text })
+                body: JSON.stringify({ message: userMessage.text })
             });
             const data = await res.json();
-            setMessages(prev => [...prev, { type: 'bot', text: data.reply }]);
+            setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: data.reply }]);
         } catch (err) {
-            setMessages(prev => [...prev, { type: 'bot', text: 'Service currently offline.' }]);
+            setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: 'I am temporarily offline. Please try again soon.' }]);
         } finally {
             setLoading(false);
         }
     };
 
-    // Calculate Inline Style
-    const getMobileStyle = () => {
-        if (position.x === null) return {}; // Let CSS take over on Desktop
-        
-        return {
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-            right: 'auto',   // Force ignore original CSS
-            bottom: 'auto',  // Force ignore original CSS
-            position: 'fixed'
-        };
-    };
-
     return (
         <>
+            {/* UPDATED: Hover Tooltip Container */}
             {!isOpen && (
-                <div 
-                    className="bot-container" 
-                    style={getMobileStyle()}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                    onClick={openChat}
-                >
-                    <span className="bot-tooltip">I am TravelGo AI.<br/>How can I help?</span>
-                    <div className="floating-bot-btn">
+                <div className="bot-container">
+                    <span className="bot-tooltip">
+                        I am TravelGo AI. <br/> How can I help?
+                    </span>
+                    <div className="floating-bot-btn" onClick={() => setIsOpen(true)}>
                         <MdSmartToy />
                     </div>
                 </div>
@@ -104,19 +83,30 @@ const AIChat = () => {
             {isOpen && (
                 <div className="chat-window">
                     <div className="chat-header">
-                        <span>TravelGo Support</span>
-                        <MdClose onClick={() => setIsOpen(false)} cursor="pointer" />
+                        <span><strong>TravelGo</strong> AI Support</span>
+                        <MdClose cursor="pointer" onClick={() => setIsOpen(false)} />
                     </div>
                     <div className="chat-body" ref={chatBodyRef}>
-                        {messages.length === 0 && <div className="message bot">Hi! How can I help you today?</div>}
-                        {messages.map((m, i) => (
-                            <div key={i} className={`message ${m.type}`}>{m.text}</div>
-                        ))}
-                        {loading && <div className="message bot">Typing...</div>}
+                        {messages.length === 0 && !greetingComplete ? (
+                            <div className="message bot">{displayGreeting}</div>
+                        ) : (
+                            messages.map((m, i) => (
+                                <div key={i} className={`message ${m.type}`}>{m.text}</div>
+                            ))
+                        )}
+                        {loading && <div className="message bot">AI is typing...</div>}
                     </div>
                     <div className="chat-footer">
-                        <input value={input} onChange={e => setInput(e.target.value)} onKeyPress={e => e.key === 'Enter' && handleSend()} placeholder="Ask me anything..." />
-                        <button onClick={handleSend}><MdSend /></button>
+                        <input 
+                            value={input} 
+                            onChange={(e) => setInput(e.target.value)} 
+                            placeholder="Ask about places or weather..." 
+                            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                            disabled={loading}
+                        />
+                        <button onClick={handleSend} disabled={loading}>
+                            <MdSend />
+                        </button>
                     </div>
                 </div>
             )}
