@@ -81,6 +81,7 @@
     z-index: 9999;
 }
 
+/* DESKTOP (Fixed) */
 .bot-container {
     position: fixed;
     bottom: 30px;
@@ -88,31 +89,9 @@
     display: flex;
     align-items: center;
     z-index: 10000;
-    touch-action: none; /* Critical: stops mobile screen from scrolling while dragging bot */
+    cursor: pointer;
 }
 
-/* Tooltip behavior */
-.bot-tooltip {
-    position: absolute;
-    right: 80px;
-    background: #ffffff;
-    color: #003580;
-    padding: 10px 15px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 700;
-    white-space: nowrap;
-    border: 1.5px solid #e2e8f0;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.bot-container:hover .bot-tooltip {
-    opacity: 1;
-}
-
-/* Bot Button Style */
 .floating-bot-btn {
     width: 60px;
     height: 60px;
@@ -122,38 +101,47 @@
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 32px;
-    cursor: grab;
+    font-size: 30px;
     box-shadow: 0 4px 15px rgba(243, 166, 20, 0.4);
 }
 
-.floating-bot-btn:active {
-    cursor: grabbing;
+.bot-tooltip {
+    position: absolute;
+    right: 80px;
+    background: white;
+    color: #003580;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    border: 1px solid #e2e8f0;
 }
 
-/* ==========================================
-   MOBILE SPECIFIC CSS
-   ========================================== */
+.bot-container:hover .bot-tooltip {
+    opacity: 1;
+}
+
+/* MOBILE DRAGGABLE APPROACH */
 @media (max-width: 768px) {
-    .bot-tooltip {
-        /* On mobile, we hide tooltip once they start dragging */
-        display: none; 
-    }
-
-    .hidden-mobile {
-        display: none !important;
-    }
-
-    /* We remove the fixed right/bottom so React position can take over */
     .bot-container {
-        transition: none !important; /* No animation while dragging for performance */
+        /* This prevents the page from moving while you drag the bot */
+        touch-action: none; 
+        transition: none !important; /* Move instantly with finger */
+    }
+
+    .bot-tooltip {
+        display: none; /* Hide tooltip on mobile to avoid clutter */
     }
 
     .chat-window {
-        width: 100%;
-        height: 100%;
-        bottom: 0;
+        width: 100vw;
+        height: 100vh;
         right: 0;
-        border-radius: 0; /* Full screen chat for mobile */
+        bottom: 0;
+        border-radius: 0;
     }
 }

@@ -4,77 +4,55 @@ import './AIChat.css';
 
 const AIChat = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const initialBotGreeting = 'Hi! I am TravelGo AI. How can I help?';
-    
-    // States for Position and Dragging
-    const [position, setPosition] = useState({ x: null, y: null }); // Coordinates for mobile
-    const [isDragging, setIsDragging] = useState(false);
-    const [dragStarted, setDragStarted] = useState(false);
-
-    // AI Messages States
-    const [displayGreeting, setDisplayGreeting] = useState('');
-    const [greetingComplete, setGreetingComplete] = useState(false);
     const [messages, setMessages] = useState([]); 
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // POSITIONING LOGIC
+    // Set a default state. If null, CSS handles it.
+    const [position, setPosition] = useState({ x: null, y: null });
+    const [isMoving, setIsMoving] = useState(false);
+
     const chatBodyRef = useRef(null);
 
-    // --- DRAG LOGIC FOR MOBILE ONLY ---
-    const handleTouchStart = () => {
-        setDragStarted(false);
-    };
-
+    // Logic for mobile touch dragging
     const handleTouchMove = (e) => {
-        setDragStarted(true);
-        setIsDragging(true);
+        // Prevent background scrolling while dragging
+        e.persist();
         const touch = e.touches[0];
         
-        // Calculate new position (minus 30 to center the icon on the finger)
-        setPosition({
-            x: touch.clientX - 30,
-            y: touch.clientY - 30
-        });
+        // Offset so finger is in the center of the 60px icon
+        const newX = touch.clientX - 30; 
+        const newY = touch.clientY - 30;
+
+        setIsMoving(true);
+        setPosition({ x: newX, y: newY });
     };
 
     const handleTouchEnd = () => {
-        // Delay resetting dragging to prevent accidental "clicks" after a move
-        setTimeout(() => setIsDragging(false), 50);
+        // Delay to distinguish between a "drag" and a "click"
+        setTimeout(() => setIsMoving(false), 100);
     };
 
-    const handleOpenChat = () => {
-        // Only open if the user wasn't just dragging the icon around
-        if (!isDragging) {
+    const openChat = () => {
+        // If the user was just moving the icon, don't open the chat
+        if (!isMoving) {
             setIsOpen(true);
         }
     };
 
-    // Initial greeting animation logic
+    // Auto-scroll chat
     useEffect(() => {
-        let typingInterval;
-        if (isOpen) {
-            setDisplayGreeting('');
-            setGreetingComplete(false);
-            setMessages([]); 
-            let i = 0;
-            typingInterval = setInterval(() => {
-                if (initialBotGreeting[i]) {
-                    setDisplayGreeting((prev) => prev + initialBotGreeting[i]);
-                    i++;
-                } else {
-                    clearInterval(typingInterval);
-                    setGreetingComplete(true);
-                    setMessages([{ type: 'bot', text: initialBotGreeting }]);
-                }
-            }, 50);
+        if (chatBodyRef.current) {
+            chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
         }
-        return () => clearInterval(typingInterval);
-    }, [isOpen]);
+    }, [messages, loading]);
 
+    // Handle Gemini API logic
     const handleSend = async () => {
         if (!input.trim()) return;
-        const userMessage = { type: 'user', text: input };
-        setMessages((prev) => [...prev, userMessage]);
+        const userMsg = { type: 'user', text: input };
+        setMessages(prev => [...prev, userMsg]);
         setInput('');
         setLoading(true);
 
@@ -82,41 +60,41 @@ const AIChat = () => {
             const res = await fetch('https://travelgo-v7ha.onrender.com/api/ai/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage.text })
+                body: JSON.stringify({ message: userMsg.text })
             });
             const data = await res.json();
-            setMessages((prev) => [...prev, { type: 'bot', text: data.reply }]);
+            setMessages(prev => [...prev, { type: 'bot', text: data.reply }]);
         } catch (err) {
-            setMessages((prev) => [...prev, { type: 'bot', text: 'I am offline. Check back later!' }]);
+            setMessages(prev => [...prev, { type: 'bot', text: 'Service currently offline.' }]);
         } finally {
             setLoading(false);
         }
     };
 
-    // Mobile style check
-    const mobileStyle = position.x ? {
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        right: 'auto',
-        bottom: 'auto'
-    } : {};
+    // Calculate Inline Style
+    const getMobileStyle = () => {
+        if (position.x === null) return {}; // Let CSS take over on Desktop
+        
+        return {
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            right: 'auto',   // Force ignore original CSS
+            bottom: 'auto',  // Force ignore original CSS
+            position: 'fixed'
+        };
+    };
 
     return (
         <>
             {!isOpen && (
                 <div 
-                    className="bot-container"
-                    style={mobileStyle}
-                    onTouchStart={handleTouchStart}
+                    className="bot-container" 
+                    style={getMobileStyle()}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    onClick={handleOpenChat}
+                    onClick={openChat}
                 >
-                    {/* Hide tooltip on mobile if it has been moved to keep UI clean */}
-                    <span className={`bot-tooltip ${dragStarted ? 'hidden-mobile' : ''}`}>
-                        I am TravelGo AI. <br/> How can I help?
-                    </span>
-                    
+                    <span className="bot-tooltip">I am TravelGo AI.<br/>How can I help?</span>
                     <div className="floating-bot-btn">
                         <MdSmartToy />
                     </div>
@@ -126,19 +104,18 @@ const AIChat = () => {
             {isOpen && (
                 <div className="chat-window">
                     <div className="chat-header">
-                        <span><strong>TravelGo</strong> AI</span>
-                        <MdClose cursor="pointer" onClick={() => setIsOpen(false)} />
+                        <span>TravelGo Support</span>
+                        <MdClose onClick={() => setIsOpen(false)} cursor="pointer" />
                     </div>
                     <div className="chat-body" ref={chatBodyRef}>
-                        {messages.length === 0 && !greetingComplete ? (
-                            <div className="message bot">{displayGreeting}</div>
-                        ) : (
-                            messages.map((m, i) => <div key={i} className={`message ${m.type}`}>{m.text}</div>)
-                        )}
-                        {loading && <div className="message bot">Thinking...</div>}
+                        {messages.length === 0 && <div className="message bot">Hi! How can I help you today?</div>}
+                        {messages.map((m, i) => (
+                            <div key={i} className={`message ${m.type}`}>{m.text}</div>
+                        ))}
+                        {loading && <div className="message bot">Typing...</div>}
                     </div>
                     <div className="chat-footer">
-                        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} />
+                        <input value={input} onChange={e => setInput(e.target.value)} onKeyPress={e => e.key === 'Enter' && handleSend()} placeholder="Ask me anything..." />
                         <button onClick={handleSend}><MdSend /></button>
                     </div>
                 </div>
