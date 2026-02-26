@@ -1,49 +1,52 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require('axios');
 
 exports.askAI = async (req, res) => {
     try {
-        console.log("📩 Incoming AI request...");
         const { message } = req.body;
+        const apiKey = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : null;
 
-        // 1. Basic Validation
-        if (!message) {
-            return res.status(400).json({ error: "Message is required." });
-        }
-
-        const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            console.error("❌ GEMINI_API_KEY missing in Render environment.");
-            return res.status(500).json({ error: "AI API Key not configured on server." });
+            return res.status(500).json({ error: "API Key missing" });
         }
 
-        // 2. Initialize the SDK
-        const genAI = new GoogleGenerativeAI(apiKey);
+        // --- DIAGNOSTIC STEP: FIND OUT WHAT MODELS YOU ACTUALLY HAVE ---
+        console.log("🔍 Checking available models for your API Key...");
+        const listModelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+        const listResponse = await axios.get(listModelsUrl);
+        
+        // This will print a list in your console. Look for names like "models/gemini-..."
+        const availableModels = listResponse.data.models.map(m => m.name);
+        console.log("✅ Models available to you:", availableModels);
 
-        // 3. CHANGE: Use "gemini-1.5-flash" instead of "gemini-1.0-pro"
-        // gemini-1.5-flash is the most compatible stable model currently.
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // We will try to find a model you are actually allowed to use
+        // Prefer 1.5-flash, then pro, then the first one in your list
+        let modelToUse = "";
+        if (availableModels.includes("models/gemini-1.5-flash")) modelToUse = "gemini-1.5-flash";
+        else if (availableModels.includes("models/gemini-pro")) modelToUse = "gemini-pro";
+        else modelToUse = availableModels[0].replace("models/", ""); // Use whatever you have
 
-        // 4. Set a system context to make the bot stay "in character"
-        const prompt = `You are the TravelGo AI, a helpful travel assistant for the TravelGo flight and hotel booking website. 
-        Keep your answers concise and friendly. 
-        User Question: ${message}`;
+        console.log(`🚀 Using assigned model: ${modelToUse}`);
 
-        // 5. Call Google API
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${apiKey}`;
 
-        console.log("✅ AI Response Successfully Generated");
-        res.status(200).json({ reply: text });
+        const payload = {
+            contents: [{ parts: [{ text: message }] }]
+        };
+
+        const response = await axios.post(url, payload);
+        const replyText = response.data.candidates[0].content.parts[0].text;
+        
+        res.status(200).json({ reply: replyText });
 
     } catch (error) {
-        console.error("🔥 GOOGLE AI FETCH ERROR:");
-        console.error(error.message);
-
-        // Send a cleaner error back to the user
-        res.status(500).json({ 
-            error: "The AI is having trouble connecting to Google services.", 
-            details: error.message 
-        });
+        console.error("--- AI SYSTEM ERROR ---");
+        if (error.response) {
+            console.error("Data:", JSON.stringify(error.response.data));
+            return res.status(error.response.status).json({
+                error: "Google AI Error",
+                message: error.response.data.error.message
+            });
+        }
+        res.status(500).json({ error: error.message });
     }
 };
