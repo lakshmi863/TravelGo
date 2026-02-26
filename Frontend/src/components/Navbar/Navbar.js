@@ -31,68 +31,54 @@ const Navbar = () => {
     window.location.reload();
   };
 
-  return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <Link to="/" className="logo" onClick={() => setIsMobileMenuOpen(false)}>
-           <img src="/TravelGo_logo2.png" alt="TravelGo Logo" />
-        </Link>
+ return (
+  <nav className="navbar">
+    <div className="navbar-container">
+      <Link to="/" className="logo" onClick={() => setIsMobileMenuOpen(false)}>
+        <img src="/TravelGo_logo2.png" alt="TravelGo Logo" />
+      </Link>
 
-        {/* --- HAMBURGER ICON FOR MOBILE --- */}
+      <div className="nav-right-side">
+        {/* User Greet for Tablet/Desktop */}
+        {token && userEmail && (
+          <span className="user-greet desktop-only">
+            Hi, <b>{userEmail.split('@')[0]}</b>
+          </span>
+        )}
+
+        {token && (
+          <button onClick={handleLogout} className="logout-nav-btn desktop-only">
+            Logout
+          </button>
+        )}
+
+        {/* Hamburger Toggle - Always on Right for mobile */}
         {token && (
           <div className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <MdClose size={30} /> : <MdMenu size={30} />}
+            {isMobileMenuOpen ? <MdClose size={32} /> : <MdMenu size={32} />}
           </div>
         )}
-
-        {/* --- NAVIGATION LINKS (Mobile and Desktop) --- */}
-        {token && (
-          <ul className={`nav-links ${isMobileMenuOpen ? 'mobile-active' : ''}`}>
-    <li>
-      <Link to="/hotels" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>
-        Hotels
-      </Link>
-    </li>
-    <li>
-      <Link to="/flights" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>
-        Flights
-      </Link>
-    </li>
-    <li className="mobile-only">
-      <Link to="/my-bookings" className="nav-link-item" onClick={() => setIsMobileMenuOpen(false)}>
-        My Bookings
-      </Link>
-    </li>
-</ul>
-        )}
-
-        <div className="nav-actions">
-          {token ? (
-            <div className="logged-in-section">
-              {hasFlightBookings && (
-                <Link to="/my-bookings" className="manage-trips-link desktop-only">
-                    My Bookings
-                </Link>
-              )}
-              
-              <span className="user-greet desktop-only" style={{ color: 'white', marginLeft: '15px' }}>
-                Hi, <b>{userEmail ? userEmail.split('@')[0] : 'Traveler'}</b>
-              </span>
-
-              <button onClick={handleLogout} className="logout-nav-btn">
-                Logout
-              </button>
-            </div>
-          ) : (
-            <div className="auth-links">
-              <Link to="/login" className="login-link">Login</Link>
-              <Link to="/register" className="register-nav-btn">Sign Up</Link>
-            </div>
-          )}
-        </div>
       </div>
-    </nav>
-  );
+
+      {/* --- SIDEBAR MENU --- */}
+      {token && (
+        <ul className={`nav-links ${isMobileMenuOpen ? 'mobile-active' : ''}`}>
+          <div className="mobile-menu-header">
+             <img src="/TravelGo_logo2.png" alt="Logo" style={{height:'40px'}} />
+             <p>Welcome, {userEmail?.split('@')[0]}</p>
+          </div>
+          <li><Link to="/hotels" onClick={() => setIsMobileMenuOpen(false)}>Hotels</Link></li>
+          <li><Link to="/flights" onClick={() => setIsMobileMenuOpen(false)}>Flights</Link></li>
+          <li><Link to="/my-bookings" onClick={() => setIsMobileMenuOpen(false)}>My Bookings</Link></li>
+          <li><Link to="/activities" onClick={() => setIsMobileMenuOpen(false)}>Activities</Link></li>
+          <li className="mobile-only">
+             <button onClick={handleLogout} className="mobile-logout-btn">LOGOUT</button>
+          </li>
+        </ul>
+      )}
+    </div>
+  </nav>
+);
 };
 
 export default Navbar;

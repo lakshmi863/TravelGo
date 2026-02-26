@@ -1,384 +1,140 @@
-/* ==========================================
-   NAVBAR BASE STRUCTURE
-   ========================================== */
+/* --- 1. GLOBAL NAVBAR STRUCTURE --- */
 .navbar {
-  position: absolute; 
+  position: fixed; /* Fixed ensures it stays at top of screen */
   top: 0;
   left: 0;
   width: 100%;
-  padding: 15px 0; /* Vertical breathing room */
-  z-index: 1000;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
-  font-family: 'Poppins', sans-serif;
-  box-sizing: border-box; /* Crucial to prevent horizontal scroll */
-}
-
-.navbar-container {
-  width: 100%; 
-  max-width: 100%; 
-  padding: 0 50px; /* Increased padding to move "Sign Up" away from edge */
+  height: 80px;
+  z-index: 10000;
+  background: #003580; /* Standard TravelGo Blue */
   display: flex;
-  justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
 }
 
-/* ==========================================
-   LOGO
-   ========================================== */
-.logo img {
-  height: 70px; /* Sizing reduced slightly for better fit */
-  width: auto;
-  display: block;
-}
-
-/* ==========================================
-   CENTER NAVIGATION LINKS (Fixing Purple)
-   ========================================== */
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 30px;
-  margin: 0;
-  padding: 0;
-  position: absolute; /* Keep centering logic */
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Target the actual text link specifically to remove underlines and purple */
-.nav-links li .nav-link-item,
-.nav-links li {
-  color: white !important; 
-  text-decoration: none !important; /* Removes the underline seen in your pic */
-  font-size: 15px;
-  font-weight: 600;
-  transition: 0.3s;
-}
-
-.nav-links li .nav-link-item:hover {
-  color: #f3a614 !important;
-}
-
-/* ==========================================
-   RIGHT ACTION AREA
-   ========================================== */
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-/* Fix "My Bookings" link color and style */
-.manage-trips-link {
-  color: white !important;
-  text-decoration: none !important;
-  font-weight: 700;
-  font-size: 12px;
-  padding: 10px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap; /* Prevents wrapping */
-}
-
-.manage-trips-link:hover {
-  background: white;
-  color: #003580 !important;
-  border-color: white;
-}
-
-.auth-links {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.login-link {
-  color: white !important;
-  text-decoration: none !important;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* Fix for truncated "Sign Up" button */
-.register-nav-btn {
-  background-color: #f3a614 !important;
-  color: white !important;
-  text-decoration: none !important;
-  padding: 10px 24px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  white-space: nowrap; /* Forces text to stay on one line */
-  display: flex;
-  align-items: center;
-}
-
-.register-nav-btn:hover {
-  background-color: #e29509 !important;
-  transform: translateY(-2px);
-}
-
-/* ==========================================
-   RESPONSIVE (Prevent Collisions)
-   ========================================== */
-@media (max-width: 1250px) {
-    .nav-links {
-        position: static;
-        transform: none;
-        order: 2;
-    }
-}
-
-@media (max-width: 900px) {
-  .navbar-container { padding: 0 20px; }
-  .manage-trips-link { display: none; } /* Hide secondary button on mobile */
-}
-.logout-nav-btn {
-    background-color: transparent; /* Clean transparent look */
-    color: #ffffff; /* White text for visibility on Navbar */
-    border: 2px solid #f3a614; /* Border using your Project Accent Orange */
-    padding: 8px 20px;
-    border-radius: 8px; /* Smooth rounded corners */
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase; /* Professional flight-app look */
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    margin-left: 15px;
-    display: inline-flex;
-    align-items: center;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Hover Effect: Fills with orange and lifts slightly */
-.logout-nav-btn:hover {
-    background-color: #f3a614; /* Fill with TravelGo Orange */
-    color: #003580; /* Changes text to Project Blue for contrast */
-    transform: translateY(-2px); /* Gentle float up */
-    box-shadow: 0 5px 15px rgba(243, 166, 20, 0.4); /* Glow effect */
-}
-
-/* Active State: Press down effect */
-.logout-nav-btn:active {
-    transform: translateY(0);
-}
-
-
-/* ==========================================
-   COMPREHENSIVE MOBILE RESPONSIVENESS (Navbar)
-   ========================================== */
-
-/* 1. For Tablets (Below 1100px) */
-@media (max-width: 1100px) {
-  .nav-links {
-    position: static; /* Remove absolute centering */
-    transform: none;
-    left: auto;
-    gap: 20px;
-  }
-
-  .navbar-container {
-    padding: 0 30px;
-  }
-
-  .logo img {
-    height: 55px; /* Shrink logo slightly */
-  }
-}
-
-/* 2. For Standard Mobile Phones (Below 768px) */
-@media (max-width: 768px) {
-  .navbar {
-    padding: 10px 0;
-    /* Optional: Change from absolute to fixed if you want it to follow scroll */
-    background: rgba(0, 53, 128, 0.95); /* Solid dark blue for readability */
-    backdrop-filter: blur(10px);
-  }
-
-  .navbar-container {
-    padding: 0 15px;
-  }
-
-  .logo img {
-    height: 45px;
-  }
-
-  /* Handle middle nav links (Hotels/Flights) */
-  .nav-links {
-    display: none; /* Hide middle links on tiny screens to prevent overlap */
-    /* Alternative: if you want them visible, use: gap: 10px; font-size: 13px; */
-  }
-
-  /* Fix Actions Area (Buttons) */
-  .nav-actions {
-    gap: 10px;
-  }
-
-  .manage-trips-link {
-    font-size: 10px;
-    padding: 8px 12px;
-  }
-
-  .register-nav-btn {
-    padding: 8px 15px;
-    font-size: 12px;
-  }
-
-  .login-link {
-    font-size: 12px;
-  }
-
-  /* Logged In Section Adjustments */
-  .logged-in-section {
-    display: flex;
-    align-items: center;
-  }
-
-  .user-greet {
-    font-size: 11px;
-    max-width: 80px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Truncates long names */
-  }
-
-  .logout-nav-btn {
-    padding: 6px 12px;
-    font-size: 10px;
-    margin-left: 8px;
-    border-width: 1.5px; /* Thinner border */
-  }
-}
-
-/* 3. For Very Small Devices (Below 480px) */
-@media (max-width: 480px) {
-  .navbar-container {
-    padding: 0 10px;
-  }
-
-  /* If space is very tight, hide the "Hi, Name" greeting entirely */
-  .user-greet {
-    display: none; 
-  }
-
-  .logo img {
-    height: 38px;
-  }
-
-  .manage-trips-link {
-    display: none; /* User can find this inside their account usually */
-  }
-  
-  .auth-links {
-    gap: 8px;
-  }
-  
-  .logout-nav-btn {
-    padding: 5px 10px;
-    font-size: 9px;
-  }
-}
-/* --- Desktop Navbar Defaults --- */
-.navbar {
-  position: absolute; 
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 15px 0;
-  z-index: 1000;
-  background: rgba(0, 53, 128, 0.95); /* Fixed background for visibility */
-}
-
 .navbar-container {
   width: 100%;
-  padding: 0 20px;
+  padding: 0 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
 }
 
-.logo img { height: 50px; width: auto; }
+.logo img {
+  height: 50px;
+  width: auto;
+  display: block;
+}
 
-/* Desktop Navigation */
+/* --- 2. DESKTOP NAVIGATION --- */
 .nav-links {
   display: flex;
   list-style: none;
   gap: 30px;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links li a {
   color: white !important;
   text-decoration: none !important;
   font-weight: 600;
+  font-size: 15px;
+  transition: 0.3s;
 }
 
-.mobile-menu-toggle { display: none; }
+.nav-links li a:hover {
+  color: #f3a614 !important;
+}
 
-/* ==========================================
-   MOBILE RESPONSIVENESS (The Fix)
-   ========================================== */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Auth / Action buttons */
+.logout-nav-btn {
+  background: transparent;
+  color: white;
+  border: 1px solid #f3a614;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.mobile-menu-toggle {
+  display: none; /* Hidden on desktop */
+  cursor: pointer;
+  color: white;
+}
+
+/* --- 3. MOBILE RESPONSIVENESS (Fixes your Floating Issue) --- */
 @media (max-width: 768px) {
-    /* 1. Show the Menu Icon */
-    .mobile-menu-toggle {
-        display: block;
-        color: #f3a614; /* Orange color for visibility */
-        cursor: pointer;
-        z-index: 2001; /* Higher than the menu */
-        order: 2; /* Moves icon after logo */
-        margin-right: 15px;
-    }
+  
+  .navbar-container {
+    padding: 0 15px;
+  }
 
-    /* 2. Hide specific desktop elements */
-    .desktop-only, .nav-links li { display: none; }
+  .desktop-only {
+    display: none !important;
+  }
 
-    /* 3. The Actual Menu Container */
-    .nav-links {
-        position: fixed; /* Layer on top of everything */
-        top: 0;
-        right: -100%; /* Off-screen to the right */
-        width: 80%; /* Takes most of the width */
-        height: 100vh;
-        background: #003580; /* Deep blue background */
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        padding-top: 100px;
-        transition: 0.4s ease-in-out;
-        z-index: 2000;
-        gap: 0; /* Reset for mobile */
-        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-    }
+  .mobile-menu-toggle {
+    display: block; /* Show hamburger icon */
+    z-index: 11000;
+    order: 2;
+  }
 
-    /* 4. Show the links when Active */
-    .nav-links.mobile-active {
-        right: 0; /* Slides into view */
-    }
+  /* SIDEBAR MENU CONTAINER */
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Completely off-screen to start */
+    width: 280px; /* Standard sidebar width */
+    height: 100vh; /* FULL height of mobile screen */
+    background: #00265c; /* Darker blue for contrast */
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 100px; /* Space for the logo at the top */
+    gap: 0;
+    transition: 0.4s ease-in-out;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+    z-index: 10500;
+    left: auto; /* Reset any left positioning from desktop */
+    transform: none; /* Reset any centering from desktop */
+  }
 
-    .nav-links li {
-        display: block; /* Show list items in mobile mode */
-        width: 100%;
-        text-align: center;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
+  /* When Menu is Open */
+  .nav-links.mobile-active {
+    right: 0; /* Slides into view */
+  }
 
-    .nav-links li a {
-        font-size: 1.2rem;
-        padding: 20px;
-        display: block;
-        width: 100%;
-    }
+  .nav-links li {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
-    .logged-in-section {
-        order: 3;
-    }
+  .nav-links li a {
+    display: block;
+    width: 100%;
+    padding: 20px 25px;
+    font-size: 18px;
+    text-align: left;
+  }
 
-    /* Extra cleaning */
-    .user-greet { display: none !important; }
+  .logo {
+    order: 1;
+  }
+
+  .nav-actions {
+    order: 3;
+  }
+
+  .user-greet {
+    display: none !important;
+  }
 }
