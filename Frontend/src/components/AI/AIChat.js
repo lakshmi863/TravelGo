@@ -69,16 +69,18 @@ const AIChat = () => {
     return (
         <>
             {/* UPDATED: Hover Tooltip Container */}
-            {!isOpen && (
-                <div className="bot-container">
-                    <span className="bot-tooltip">
-                        I am TravelGo AI. <br/> How can I help?
-                    </span>
-                    <div className="floating-bot-btn" onClick={() => setIsOpen(true)}>
-                        <MdSmartToy />
-                    </div>
+             {!isOpen && (
+            <div className="bot-container">
+                {/* TOOLTIP FIRST so it sits to the left in a row */}
+                <span className="bot-tooltip">
+                    I am TravelGo AI. <br/> How can I help?
+                </span>
+                
+                <div className="floating-bot-btn" onClick={() => setIsOpen(true)}>
+                    <MdSmartToy />
                 </div>
-            )}
+            </div>
+        )}
 
             {isOpen && (
                 <div className="chat-window">
