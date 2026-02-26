@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // You can get a free API key from https://aistudio.google.com/
-const genAI = new GoogleGenerativeAI("YOUR_GEMINI_API_KEY");
+const genAI = new GoogleGenerativeAI("AIzaSyAzZSPgMhldEIFQhqb8fcL2OCWi1IrjjCI");
 
 exports.askAI = async (req, res) => {
     try {
