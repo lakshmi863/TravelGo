@@ -8,13 +8,13 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 // Now import controllers
-const aiController = require('./src/controllers/AIController');
+
 const userRouter = require('./src/Routers/userRouter'); 
 const activityRouter = require('./src/Routers/activityRouter');
 const db = require('./src/Config/db'); 
 const UserModel = require('./src/Models/UserModel'); 
 const HotelBooking = require('./src/Models/HotelBookingModel'); ;
-
+const aiRoutes = require('./src/Routers/aiRoutes');
 // Utils
 const sendHotelConfirmation = require('./src/utils/hotelEmail');
 
@@ -84,7 +84,7 @@ app.get('/api/hotels/my-bookings/:email', async (req, res) => {
     }
 });
 
-app.use('/api/activities', activityRouter);
+app.use("/api/ai", aiRoutes);
 app.use('/api/users', authLimiter, userRouter); 
 
 // AI ROUTE
