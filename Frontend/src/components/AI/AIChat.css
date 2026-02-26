@@ -80,3 +80,73 @@
     box-shadow: 0 4px 15px rgba(243, 166, 20, 0.4);
     z-index: 9999;
 }
+
+.bot-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center; /* Vertically align bubble and bot */
+    z-index: 10000;
+}
+
+/* The Bot Button - Needs to be on top and stable */
+.floating-bot-btn {
+    width: 60px;
+    height: 60px;
+    background: #f3a614;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(243, 166, 20, 0.4);
+    transition: all 0.3s ease;
+    z-index: 11; /* Above the bubble */
+    position: relative;
+}
+
+/* The White Speech Bubble */
+.bot-tooltip {
+    position: absolute;
+    right: 80px; /* Moves it exactly to the left of the 60px button + 20px gap */
+    background: #ffffff;
+    color: #003580;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(0, 53, 128, 0.15);
+    border: 1.5px solid #e2e8f0;
+    white-space: nowrap; /* Forces text into one line so it's never cut off */
+    
+    /* Animation: Slides from left to right on hover */
+    opacity: 0;
+    transform: translateX(15px); 
+    transition: all 0.4s ease;
+    pointer-events: none;
+}
+
+/* Small triangle (Tail) for the bubble */
+.bot-tooltip::after {
+    content: "";
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 8px solid #ffffff; /* Triangle points at the button */
+}
+
+/* Logic: Hover the WHOLE CONTAINER to see tooltip */
+.bot-container:hover .bot-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.floating-bot-btn:hover {
+    transform: scale(1.1);
+}
