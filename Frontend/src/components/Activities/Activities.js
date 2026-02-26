@@ -39,12 +39,14 @@ const Activities = () => {
         }
 
         // Final payload preparation
-        const payload = { 
-            ...formData, 
-            price: Number(formData.price), // Force number for DB
-            theme: filter 
-        };
-
+      const payload = {
+            title: formData.title.trim(),
+            city: formData.city.trim(),
+            price: Number(formData.price), // IMPORTANT: Converts "500" -> 500
+            theme: filter,
+            duration: formData.duration.trim(),
+            description: formData.description.trim()
+        }
         const res = await fetch('https://travelgo-v7ha.onrender.com/api/activities/create-event', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
