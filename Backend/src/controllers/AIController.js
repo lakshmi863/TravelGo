@@ -3,52 +3,47 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 exports.askAI = async (req, res) => {
     try {
         console.log("📩 Incoming AI request...");
-
         const { message } = req.body;
 
-        // ✅ Validate message
-        if (!message || typeof message !== "string" || message.trim() === "") {
-            return res.status(400).json({
-                error: "Message is required and must be a valid string."
-            });
+        // 1. Basic Validation
+        if (!message) {
+            return res.status(400).json({ error: "Message is required." });
         }
 
-        // ✅ Check API Key
         const apiKey = process.env.GEMINI_API_KEY;
-
         if (!apiKey) {
-            console.error("❌ GEMINI_API_KEY is missing in environment variables.");
-            return res.status(500).json({
-                error: "Server configuration error."
-            });
+            console.error("❌ GEMINI_API_KEY missing in Render environment.");
+            return res.status(500).json({ error: "AI API Key not configured on server." });
         }
 
-        // ✅ Initialize Gemini
+        // 2. Initialize the SDK
         const genAI = new GoogleGenerativeAI(apiKey);
 
-        // 🔥 Use stable supported model
-        const model = genAI.getGenerativeModel({
-            model: "gemini-1.0-pro"
-        });
+        // 3. CHANGE: Use "gemini-1.5-flash" instead of "gemini-1.0-pro"
+        // gemini-1.5-flash is the most compatible stable model currently.
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        // ✅ Generate response
-        const result = await model.generateContent(message);
+        // 4. Set a system context to make the bot stay "in character"
+        const prompt = `You are the TravelGo AI, a helpful travel assistant for the TravelGo flight and hotel booking website. 
+        Keep your answers concise and friendly. 
+        User Question: ${message}`;
+
+        // 5. Call Google API
+        const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
 
-        console.log("✅ AI Response Success");
-
-        res.status(200).json({
-            reply: text
-        });
+        console.log("✅ AI Response Successfully Generated");
+        res.status(200).json({ reply: text });
 
     } catch (error) {
-        console.error("🔥 AI CONTROLLER ERROR:");
-        console.error(error);
+        console.error("🔥 GOOGLE AI FETCH ERROR:");
+        console.error(error.message);
 
-        res.status(500).json({
-            error: "TravelGo AI is temporarily unavailable.",
-            details: error.message
+        // Send a cleaner error back to the user
+        res.status(500).json({ 
+            error: "The AI is having trouble connecting to Google services.", 
+            details: error.message 
         });
     }
 };
