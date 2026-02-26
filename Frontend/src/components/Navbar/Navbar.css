@@ -1,140 +1,127 @@
 /* --- 1. GLOBAL NAVBAR STRUCTURE --- */
 .navbar {
-  position: fixed; /* Fixed ensures it stays at top of screen */
+  position: fixed; 
   top: 0;
   left: 0;
   width: 100%;
   height: 80px;
   z-index: 10000;
-  background: #003580; /* Standard TravelGo Blue */
+  background: #003580; /* TravelGo Blue */
   display: flex;
   align-items: center;
-  box-sizing: border-box;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 .navbar-container {
   width: 100%;
-  padding: 0 30px;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
 }
 
 .logo img {
-  height: 50px;
+  height: 45px;
   width: auto;
-  display: block;
 }
 
-/* --- 2. DESKTOP NAVIGATION --- */
+/* --- 2. LAYOUT GROUPS --- */
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 30px;
+  gap: 25px;
   margin: 0;
-  padding: 0;
 }
 
-.nav-links li a {
+.nav-links a {
   color: white !important;
-  text-decoration: none !important;
+  text-decoration: none;
   font-weight: 600;
-  font-size: 15px;
-  transition: 0.3s;
-}
-
-.nav-links li a:hover {
-  color: #f3a614 !important;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 }
 
-/* Auth / Action buttons */
-.logout-nav-btn {
-  background: transparent;
+.user-greet {
   color: white;
-  border: 1px solid #f3a614;
-  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.user-greet b {
+  color: #f3a614; /* Orange Name */
+}
+
+.logout-nav-btn {
+  background: #f3a614;
+  color: #003580;
+  border: none;
+  padding: 8px 18px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 12px;
+  transition: 0.3s;
+}
+
+.logout-nav-btn:hover {
+  background: white;
 }
 
 .mobile-menu-toggle {
-  display: none; /* Hidden on desktop */
-  cursor: pointer;
+  display: none;
   color: white;
+  cursor: pointer;
 }
 
-/* --- 3. MOBILE RESPONSIVENESS (Fixes your Floating Issue) --- */
-@media (max-width: 768px) {
-  
-  .navbar-container {
-    padding: 0 15px;
-  }
+/* --- 3. MOBILE RESPONSIVENESS (768px and below) --- */
+@media (max-width: 992px) {
+  .desktop-only { display: none !important; }
+  .mobile-menu-toggle { display: block; }
 
-  .desktop-only {
-    display: none !important;
-  }
-
-  .mobile-menu-toggle {
-    display: block; /* Show hamburger icon */
-    z-index: 11000;
-    order: 2;
-  }
-
-  /* SIDEBAR MENU CONTAINER */
+  /* SIDEBAR MENU */
   .nav-links {
     position: fixed;
     top: 0;
-    right: -100%; /* Completely off-screen to start */
-    width: 280px; /* Standard sidebar width */
-    height: 100vh; /* FULL height of mobile screen */
-    background: #00265c; /* Darker blue for contrast */
+    right: -100%; /* Hidden */
+    width: 280px;
+    height: 100vh;
+    background: #001a41; 
     flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 100px; /* Space for the logo at the top */
-    gap: 0;
-    transition: 0.4s ease-in-out;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
-    z-index: 10500;
-    left: auto; /* Reset any left positioning from desktop */
-    transform: none; /* Reset any centering from desktop */
+    padding: 100px 30px;
+    transition: 0.4s;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    z-index: 999;
   }
 
-  /* When Menu is Open */
   .nav-links.mobile-active {
-    right: 0; /* Slides into view */
+    right: 0; /* Shown */
   }
 
   .nav-links li {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .mobile-menu-header {
+    margin-bottom: 30px;
+    color: white;
+  }
+
+  .mobile-logout-btn {
     width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .nav-links li a {
-    display: block;
-    width: 100%;
-    padding: 20px 25px;
-    font-size: 18px;
-    text-align: left;
-  }
-
-  .logo {
-    order: 1;
-  }
-
-  .nav-actions {
-    order: 3;
-  }
-
-  .user-greet {
-    display: none !important;
+    background: #ef4444;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 800;
+    margin-top: 20px;
   }
 }
