@@ -3,6 +3,15 @@ The system supports flight search, booking, seat selection, authentication, emai
 
 The project is fully containerized using Docker and deployed with Nginx as a reverse proxy.
 
+FrontEnd link(https://travelgo-front.onrender.com )
+
+Backend Node.js link( https://travelgo-v7ha.onrender.com )
+
+Backend Django link( https://travelgo-django.onrender.com )
+
+web site vedio link( https://drive.google.com/file/d/1xs7HlacaF97rW6pQlJfSNDYciN0MlsWO/view?usp=sharing )
+
+
 Architecture :
 
 <img width="1536" height="1024" alt="Architecture " src="https://github.com/user-attachments/assets/fd6a7438-3be3-4e0f-8a44-33a41094f2bc" />
