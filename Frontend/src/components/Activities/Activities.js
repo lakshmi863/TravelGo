@@ -10,6 +10,7 @@ const Activities = () => {
     const [selected, setSelected] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [isBusy, setIsBusy] = useState(false);
+    const [loading, setLoading] = useState(true); 
     
     // States for adding a new Event (Ensuring keys match Schema exactly)
     const [formData, setFormData] = useState({ 
@@ -31,6 +32,7 @@ const Activities = () => {
             })
             .then(data => {
                 setActivities(Array.isArray(data) ? data.reverse() : []);
+                setLoading(false)
             })
             .catch(err => console.error("Sync Error:", err));
     };
