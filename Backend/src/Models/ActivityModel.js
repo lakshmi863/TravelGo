@@ -3,11 +3,14 @@ const mongoose = require('mongoose');
 const activitySchema = new mongoose.Schema({
     title: { type: String, required: true },
     city: { type: String, required: true },
-    // Removed image field
-    theme: { type: String, enum: ['ADVENTURE', 'WATER', 'SIGHTSEEING', 'FOOD'], required: true },
+    theme: { 
+        type: String, 
+        required: true,
+        enum: ['ADVENTURE', 'WATER', 'SIGHTSEEING', 'FOOD'] // Matches your filter names
+    },
     price: { type: Number, required: true }, 
-    duration: String,
-    description: String
+    duration: { type: String, required: true },
+    description: { type: String, required: true }
 });
 
 const activityBookingSchema = new mongoose.Schema({
