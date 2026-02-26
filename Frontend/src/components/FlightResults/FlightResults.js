@@ -211,7 +211,7 @@ const FlightResults = () => {
                   <div className="airline-col">
                     <div className="logo-container">
                         <img 
-                            src={airlineLogos[flight.airline] || "https://img.freepik.com/premium-vector/jet-airplane-flying-logo-template_135086-455.jpg"} 
+                            src={airlineLogos[flight.airline] || "https://vaabrowse.virginatlantic.com/content/dam/flying-club/tailfins/INDIGO_700x600.jpg"} 
                             alt={flight.airline} 
                             className="air-logo" 
                         />
