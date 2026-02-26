@@ -5,7 +5,8 @@ The project is fully containerized using Docker and deployed with Nginx as a rev
 
 Architecture :
 
-![Uploading Architecture .png…]()
+<img width="1536" height="1024" alt="Architecture " src="https://github.com/user-attachments/assets/fd6a7438-3be3-4e0f-8a44-33a41094f2bc" />
+
 
 
 
