@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const aiController = require('./src/controllers/AIController');
 
 // Config and Models
 const userRouter = require('./src/Routers/userRouter'); 
@@ -114,7 +115,7 @@ app.use('/api/activities', activityRouter);
 
 // Apply authLimiter specifically to the users route to stop hackers
 app.use('/api/users', authLimiter, userRouter); 
-
+app.post('/api/ai/chat', aiController.askAI);
 // ---------------------------------------------------------
 // SERVER INITIALIZATION
 // ---------------------------------------------------------

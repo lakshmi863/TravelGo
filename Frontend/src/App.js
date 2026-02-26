@@ -13,6 +13,7 @@ import Hotels from './components/Hotels/Hotels';
 import Packages from './components/Packages/Packages';
 import Activities from './components/Activities/Activities';
 import Footer from './components/Footer/Footer';
+import AIChat from './components/AI/AIChat';
 
 const App = () => {
   // Logic: Check if token exists in storage
@@ -53,6 +54,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/login" />} />
         )}
       </Routes>
+      <AIChat />
       <Footer />
     </Router>
   );
