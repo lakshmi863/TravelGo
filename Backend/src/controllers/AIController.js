@@ -1,19 +1,23 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Make sure it reads from the system environment, NOT a hardcoded string
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// USE process.env to make it work on Render
+const apiKey = process.env.GEMINI_API_KEY;
+
+// Check if Key exists at startup to prevent crashing
+if (!apiKey) {
+    console.error("❌ ERROR: GEMINI_API_KEY is missing from environment variables!");
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
 
 exports.askAI = async (req, res) => {
     try {
         const { message } = req.body;
         
-        // 500 error fix: Ensure model name is correct and key is valid
+        // Ensure you have selected a valid model
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const prompt = `
-            You are "TravelGo AI", a friendly travel assistant. 
-            User Question: ${message}
-        `;
+        const prompt = `You are "TravelGo AI", a friendly travel assistant... User Question: ${message}`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -21,8 +25,12 @@ exports.askAI = async (req, res) => {
 
         res.status(200).json({ reply: text });
     } catch (error) {
-        // Log the actual error to your Render dashboard so you can see it
-        console.error("Gemini AI Error:", error.message);
-        res.status(500).json({ error: "AI processing failed", details: error.message });
+        // Log the EXACT error to your Render 'Logs' tab so you can see why it failed
+        console.error("AI SQUARING ERROR:", error.message);
+        
+        res.status(500).json({ 
+            error: "TravelGo AI Error", 
+            message: error.message 
+        });
     }
 };
